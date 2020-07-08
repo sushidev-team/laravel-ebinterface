@@ -2,7 +2,7 @@
 
 namespace Ambersive\Ebinterface\Classes;
 
-use Ambersive\Ebinterface\Classes\EbInterfaceInvoice;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
 
 
 class EbInterfaceInvoiceHandler {
@@ -19,7 +19,7 @@ class EbInterfaceInvoiceHandler {
      * @return EbInterfaceInvoice
      */
     public function create(String $id = null):EbInterfaceInvoice {
-        
+
         $invoice = new EbInterfaceInvoice();    
 
         if ($id !== null){

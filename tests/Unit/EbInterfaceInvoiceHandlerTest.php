@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use Ambersive\Ebinterface\Classes\EbInterfaceInvoiceHandler;
-use Ambersive\Ebinterface\Classes\EbInterfaceInvoice;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
 
 class EbInterfaceInvoiceHandlerTest extends TestCase
 {
@@ -31,13 +31,15 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         parent::tearDown();
     }
     
+    /**
+     * Test if an instance of invoice will be returned by the EbInterfaceInvoiceHandler
+     */
     public function testIfInvoiceHandlerCreateWillReturnInvoiceClass(): void {
 
         $invoice = $this->invoiceHandler->create();
 
+        $this->assertNotNull($invoice);
         $this->assertTrue($invoice instanceof EbInterfaceInvoice);
-
-        dd($invoice);
 
     }
 
