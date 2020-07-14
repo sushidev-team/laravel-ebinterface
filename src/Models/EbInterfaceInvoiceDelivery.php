@@ -14,12 +14,15 @@ class EbInterfaceInvoiceDelivery {
 
     public Carbon $date;
     public EbInterfaceAddress $address;
-    public EbInterfaceContact $contact;
+    public ?EbInterfaceContact $contact = null;
 
-    public function __construct(EbInterfaceAddress $address, EbInterfaceContact $contact, Carbon $date) {
+    public function __construct(Carbon $date, EbInterfaceAddress $address, EbInterfaceContact $contact = null) {
         $this->address = $address;
-        $this->contact = $contact;
         $this->date = $date;
+
+        if ($contact !== null){
+            $this->contact = $contact;
+        }
     }
     
     /**
@@ -29,11 +32,17 @@ class EbInterfaceInvoiceDelivery {
      */
     public function toXml():String{
 
-        $delivery = ArrayToXml::convert([
+        $data = [
             'Date' => $this->date->format('Y-m-d'),
             'Address' => preg_replace('/<[\/]?Address\>|\\n/','', $this->address->toXml()),
-            'Contact' => $this->contact->toArray()
-        ], 'Delivery');
+            'Contact' => $this->contact !== null ? $this->contact->toArray() : null
+        ];
+
+        if ($data['Contact'] === null) {
+            unset($data['Contact']);
+        }
+
+        $delivery = ArrayToXml::convert($data, 'Delivery');
 
         return EbInterfaceXml::clean($delivery);
 

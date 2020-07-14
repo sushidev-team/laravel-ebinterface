@@ -33,7 +33,7 @@ class EbInterfaceDeliveryTest extends TestCase
      */
     public function testIfEbInterfaceDeliveryConvertToXmlWillBeValid():void {
 
-        $delivery = new EbInterfaceInvoiceDelivery($this->address, $this->contact, Carbon::now());
+        $delivery = new EbInterfaceInvoiceDelivery(Carbon::now(), $this->address, $this->contact);
         $xml = $delivery->toXml();
 
         $this->assertNotNull($delivery);
@@ -41,6 +41,21 @@ class EbInterfaceDeliveryTest extends TestCase
         $this->assertNotFalse(strpos($xml, "<Date>".Carbon::now()->format('Y-m-d')."</Date>"));
         $this->assertFalse(strpos($xml, "&lt;"));
         $this->assertNotFalse(strpos($xml, "<Salutation>Mr</Salutation>"));
+
+    }
+
+    /** */
+    public function testIfEbInterfaceDeliveryWillAcceptANullContactInformation():void {
+
+
+        $delivery = new EbInterfaceInvoiceDelivery(Carbon::now(), $this->address);
+        $xml = $delivery->toXml();
+
+        $this->assertNotNull($delivery);
+        $this->assertNotNull($xml);
+        $this->assertNotFalse(strpos($xml, "<Date>".Carbon::now()->format('Y-m-d')."</Date>"));
+        $this->assertFalse(strpos($xml, "&lt;"));
+        $this->assertFalse(strpos($xml, "<Salutation>Mr</Salutation>"));
 
     }
 
