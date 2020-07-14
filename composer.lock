@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d568e23e54c49a7f17b5deb25005595b",
+    "content-hash": "df904dcce44fab6b3be01aa99a38eb8e",
     "packages": [
         {
             "name": "brick/math",
@@ -3138,6 +3138,70 @@
             "time": "2020-06-30T14:43:42+00:00"
         },
         {
+            "name": "tariq86/country-list",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tariq86/country-list.git",
+                "reference": "6d93834e72a1132994f72287dd81e54b99662fd0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tariq86/country-list/zipball/6d93834e72a1132994f72287dd81e54b99662fd0",
+                "reference": "6d93834e72a1132994f72287dd81e54b99662fd0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "illuminate/support": "^5.8|^6|^7",
+                "php": "^7.1",
+                "umpirsky/country-list": "2.0.*"
+            },
+            "require-dev": {
+                "ext-pcov": "*",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Tariq86\\CountryList\\CountryListServiceProvider"
+                    ],
+                    "aliases": {
+                        "Countries": "Tariq86\\CountryList\\CountryListFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Tariq86\\CountryList\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tariq86 <tariq.86@protonmail.com>",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "List of all countries with names and ISO 3166-1 codes in all languages and data formats for Laravel",
+            "keywords": [
+                "countries",
+                "country",
+                "i18n",
+                "internationalization",
+                "laravel"
+            ],
+            "time": "2020-05-12T16:11:32+00:00"
+        },
+        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "dev-master",
             "source": {
@@ -3185,6 +3249,48 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2020-07-13T06:12:54+00:00"
+        },
+        {
+            "name": "umpirsky/country-list",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/umpirsky/country-list.git",
+                "reference": "05fda51cd97b3294e8175ffed06104c44b3c71d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/umpirsky/country-list/zipball/05fda51cd97b3294e8175ffed06104c44b3c71d7",
+                "reference": "05fda51cd97b3294e8175ffed06104c44b3c71d7",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "slowprog/composer-copy-file": "^0.2",
+                "symfony/intl": "^4.2",
+                "umpirsky/list-generator": "^1.2"
+            },
+            "type": "library",
+            "extra": {
+                "copy-file": {
+                    "vendor/umpirsky/list-generator/Dockerfile": "./",
+                    "vendor/umpirsky/list-generator/docker-compose.yml": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saša Stamenković",
+                    "email": "umpirsky@gmail.com"
+                }
+            ],
+            "description": "List of all countries with names and ISO 3166-1 codes in all languages and data formats.",
+            "time": "2019-04-12T14:29:29+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -5209,6 +5315,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "tariq86/country-list": 20,
         "illuminate/support": 20,
         "laravel/framework": 20,
         "ambersive/keepachangelog": 20,
