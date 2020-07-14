@@ -17,12 +17,17 @@ class EbInterfaceAddress {
     public String $town = "";
     public String $postal = "";
     public String $countryCode = "";
+    public ?String $email = null;
 
-    public function __construct(String $name, String $street, String $town, String $postal, String $countryCode = 'AT') {
+    public function __construct(String $name, String $street, String $town, String $postal, String $countryCode = 'AT', ?String $email = null) {
         $this->name = $name;
         $this->street = $street;
         $this->town = $town;
         $this->postal = $postal;
+
+        if ($email !== null) {
+            $this->email = $email;
+        }
 
         // Validate if the country code is valid
  
@@ -58,13 +63,19 @@ class EbInterfaceAddress {
      * @return array
      */
     public function toArray():array {
-        return [
+        $data = [
             'Name' => $this->name,
             'Street' => $this->street,
             'Town' => $this->town,
             'ZIP' => $this->postal,
             'Country' => $this->countryCode
         ];
+
+        if ($this->email !== null) {
+            $data['Email'] = $this->email;
+        }
+
+        return $data;
     }
 
 
