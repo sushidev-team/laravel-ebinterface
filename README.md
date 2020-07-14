@@ -1,6 +1,8 @@
 # ambersive/ebinterface
 
-Laravel ebInterface
+[![Build Status](https://travis-ci.org/AMBERSIVE/laravel-ebinterface.svg?branch=master)](https://travis-ci.org/AMBERSIVE/laravel-ebinterface)
+
+Laravel ebInterface integration. This package is not yet production ready.
 
 Changes between versions will be tracked in the [CHANGELOG](CHANGELOG.md).
 
