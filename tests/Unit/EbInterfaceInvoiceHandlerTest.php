@@ -2,18 +2,13 @@
 
 namespace AMBERSIVE\Ebinterface\Tests\Unit;
 
-use Tests\TestCase;
-
 use Config;
 use File;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 use Ambersive\Ebinterface\Classes\EbInterfaceInvoiceHandler;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
+
+use AMBERSIVE\Tests\TestCase;
 
 class EbInterfaceInvoiceHandlerTest extends TestCase
 {

@@ -1,6 +1,6 @@
 {
     "name": "ambersive/ebinterface",
-    "description": "Laravel ebInterface",
+    "description": "ebInterface integration for electronic invoices.",
     "license": "MIT",
     "authors": [
         {
@@ -17,11 +17,18 @@
         "php" : ">=7.4",
         "illuminate/support": "5.8.*|6.*|7.*|8.*|dev-master",
         "laravel/framework": "5.8.*|6.*|7.*|8.*|dev-master",
-        "ambersive/keepachangelog": "dev-master"
+        "ambersive/keepachangelog": "dev-master",
+        "phpunit/phpunit": "^9.3@dev",
+        "orchestra/testbench": "3.8.*|4.*|5.*"
     },
     "autoload": {
         "psr-4": {
             "Ambersive\\Ebinterface\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AMBERSIVE\\Tests\\": "tests/"
         }
     },
     "extra": {
