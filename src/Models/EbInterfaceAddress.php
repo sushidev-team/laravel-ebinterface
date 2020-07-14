@@ -7,8 +7,8 @@ use Countries;
 use Illuminate\Validation\ValidationException;
 
 use Spatie\ArrayToXml\ArrayToXml;
-
-use Ambersive\Ebinterface\Models\EbInterfaceCountries;
+use Ambersive\Ebinterface\Classes\EbInterfaceXml;
+use Ambersive\Ebinterface\Classes\EbInterfaceCountries;
 
 class EbInterfaceAddress {
 
@@ -45,19 +45,26 @@ class EbInterfaceAddress {
      */
     public function toXml():String {
 
-        $address = str_replace("<?xml version=\"1.0\"?>","",ArrayToXml::convert([
+        $address = ArrayToXml::convert($this->toArray(), 'Address');
+        $address = str_replace("<Country>","<Country CountryCode='".$this->countryCode."'>", $address);
+
+        return EbInterfaceXml::clean($address);
+
+    }
+    
+    /**
+     * Transform the data into an array
+     *
+     * @return array
+     */
+    public function toArray():array {
+        return [
             'Name' => $this->name,
             'Street' => $this->street,
             'Town' => $this->town,
             'ZIP' => $this->postal,
             'Country' => $this->countryCode
-        ], 'Address'));
-
-
-        $address = str_replace("<Country>","<Country CountryCode='".$this->countryCode."'>", $address);
-
-        return str_replace("\n","",$address);
-
+        ];
     }
 
 

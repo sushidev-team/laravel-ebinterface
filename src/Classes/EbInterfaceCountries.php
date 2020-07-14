@@ -1,6 +1,6 @@
 <?php 
 
-namespace Ambersive\Ebinterface\Models;
+namespace Ambersive\Ebinterface\Classes;
 
 use Carbon\Carbon;
 use File;
