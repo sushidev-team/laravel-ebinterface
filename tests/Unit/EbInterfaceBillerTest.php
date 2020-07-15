@@ -42,6 +42,9 @@ class EbInterfaceBillerTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * Test if the email attribute is present
+     */
     public function testIfEbInterfaceBillerHasAnEmailAttribute():void {
 
         $this->assertNotNull($this->address);
@@ -49,6 +52,9 @@ class EbInterfaceBillerTest extends TestCase
 
     }
 
+    /**
+     * Test if the create XML works
+     */
     public function testIfEbInterfaceBillerCanCreateXml():void {
         $biller = new EbInterfaceInvoiceBiller();
         $xml = $biller->toXml();
@@ -57,6 +63,29 @@ class EbInterfaceBillerTest extends TestCase
         $this->assertNotNull($xml);
         $this->assertFalse(strpos($xml, "&lt;"));
         $this->assertNotFalse(strpos($xml, "<Salutation>Mr</Salutation>"));
+    }
+
+    /**
+     * Test if the validation for the Invoice biller part works
+     */
+    public function testIfEbInterfaceBillerValidationWorks():void {
+
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+
+        Config::set('ebinterface.biller', [
+            'vatId'             => 'ATU123456789',
+            'name'              => 'Manuel Ihl',
+            'street'            => 'Geylinggasse 15',
+            'postal'            => '1130',
+            'town'              => 'Vienna',
+            'countryCode'       => 'AT',
+            'email'             => '',
+            'salutation'        => 'Mr',
+            'salutation_name'   => 'Ihl'
+        ]);
+
+        $biller = new EbInterfaceInvoiceBiller();
+
     }
 
 }

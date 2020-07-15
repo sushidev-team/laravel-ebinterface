@@ -16,6 +16,7 @@ return [
     ],
     'biller' => [
         'vatId'             => env('EBINTERFACE_BILLER_VATID', null),
+        'billerId'          => env('EBINTERFACE_BILLER_ID', null),
         'name'              => env('EBINTERFACE_BILLER_NAME', null),
         'street'            => env('EBINTERFACE_BILLER_STREET', null),
         'postal'            => env('EBINTERFACE_BILLER_POSTAL', null),

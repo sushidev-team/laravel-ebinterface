@@ -2,6 +2,8 @@
 
 namespace Ambersive\Ebinterface\Models;
 
+use Validator;
+
 use Carbon\Carbon;
 
 use Spatie\ArrayToXml\ArrayToXml;
@@ -10,10 +12,12 @@ use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
 
+use Illuminate\Validation\ValidationException;
+
 class EbInterfaceInvoiceBiller {
 
-    public ?String $vadId = null;
-    public ?String $billderId = null;
+    public ?String $vatId = null;
+    public ?String $billerId = null;
     public ?EbInterfaceAddress $address = null;
     public ?EbInterfaceContact $contact = null;
 
@@ -33,6 +37,23 @@ class EbInterfaceInvoiceBiller {
             config('ebinterface.biller.salutation_name'),
         );
 
+        $this->vatId = $vatId != null ? $vatId : config('ebinterface.biller.vatId', 'ATU00000000');
+        $this->billerId = $billerId != null ? $billerId : config('ebinterface.biller.billerId', '0');
+
+        $data = array_merge(
+            $this->address->toArray(),
+            ['InvoiceRecipientsBillerID' => $this->billerId]
+        );
+
+        $validator = Validator::make($data, [
+            'Email' => 'required|email:rfc,dns',
+            'InvoiceRecipientsBillerID' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
     }
 
     /**
@@ -43,10 +64,10 @@ class EbInterfaceInvoiceBiller {
     public function toXml():String{
 
         $data = [
-            'VATIdentificationNumber' => $this->vadId,
+            'VATIdentificationNumber' => $this->vatId,
             'Address' => preg_replace('/<[\/]?Address\>|\\n/','', $this->address->toXml()),
             'Contact' => $this->contact !== null ? $this->contact->toArray() : null,
-            'InvoiceRecipientsBillerID' => $this->billderId
+            'InvoiceRecipientsBillerID' => $this->billerId
         ];
 
         if ($data['Contact'] === null) {
