@@ -29,6 +29,7 @@ class EbInterfaceOrderReferenceTest extends TestCase
 
     }
 
+    /** */
     public function testIfInvoiceOrderReferenceHasXmlFunction():void {
 
         $reference = new EbInterfaceOrderReference("TEST", Carbon::now(), "TESTORDER");
