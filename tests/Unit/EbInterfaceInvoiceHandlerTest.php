@@ -180,4 +180,28 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     }
 
+    /**
+     * Test if you can set the header
+     */
+    public function testIfInvoiceSetHeaderWorks():void {
+
+        $this->invoice->setHeader("XXX");
+
+        $this->assertNotNull($this->invoice->header);
+        $this->assertEquals("XXX", $this->invoice->header);
+
+    }
+
+    /**
+     * Test if you can set the footer
+     */
+    public function testIfInvoiceSetFooterWorks():void {
+
+        $this->invoice->setFooter("YYY");
+
+        $this->assertNotNull($this->invoice->footer);
+        $this->assertEquals("YYY", $this->invoice->footer);
+
+    }
+
 }   

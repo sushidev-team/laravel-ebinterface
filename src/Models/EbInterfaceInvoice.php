@@ -16,6 +16,9 @@ class EbInterfaceInvoice {
     public ?EbInterfaceInvoiceDelivery $delivery = null;
     public ?EbInterfaceInvoiceRecipient $recipient = null;
 
+    public String $header = "";
+    public String $footer = "";
+
     public function __construct() {
         $this->setInvoiceDate();
     }
@@ -105,11 +108,13 @@ class EbInterfaceInvoice {
         return $this;
     }
 
-    public function setHeader(): EbInterfaceInvoice {
+    public function setHeader(String $text): EbInterfaceInvoice {
+        $this->header = $text;
         return $this;
     }
 
-    public function setFooter(): EbInterfaceInvoice {
+    public function setFooter(String $text): EbInterfaceInvoice {
+        $this->footer = $text;
         return $this;
     }
 
