@@ -31,7 +31,7 @@ class EbInterfaceCompanyLegal extends EbInterfaceBase {
      *
      * @return String
      */
-    public function toXml(String $container = ""):String {
+    public function toXml(?String $container = ""):String {
 
        $lines = [];
 

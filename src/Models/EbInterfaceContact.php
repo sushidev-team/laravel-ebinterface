@@ -27,7 +27,7 @@ class EbInterfaceContact extends EbInterfaceBase {
      *
      * @return String
      */
-    public function toXml(String $container = ""):String {
+    public function toXml(?String $container = ""):String {
 
         $contact = ArrayToXml::convert($this->toArray(), $container === "" ? "Contact" : $container);
         return EbInterfaceXml::clean($contact,);

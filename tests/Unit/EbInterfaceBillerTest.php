@@ -57,7 +57,7 @@ class EbInterfaceBillerTest extends TestCase
      */
     public function testIfEbInterfaceBillerCanCreateXml():void {
         $biller = new EbInterfaceInvoiceBiller();
-        $xml = $biller->toXml();
+        $xml = $biller->toXml("root");
 
         $this->assertNotNull($biller);
         $this->assertNotNull($xml);

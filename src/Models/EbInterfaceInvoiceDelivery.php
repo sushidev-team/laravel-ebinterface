@@ -18,6 +18,7 @@ class EbInterfaceInvoiceDelivery extends EbInterfaceBase{
     public ?EbInterfaceContact $contact = null;
 
     public function __construct(Carbon $date, EbInterfaceAddress $address, EbInterfaceContact $contact = null) {
+        
         $this->address = $address;
         $this->date = $date;
 
@@ -31,11 +32,11 @@ class EbInterfaceInvoiceDelivery extends EbInterfaceBase{
      *
      * @return String
      */
-    public function toXml(String $container = ""):String{
+    public function toXml(?String $container = ""):String {
 
         $data = [
             'Date' => $this->date->format('Y-m-d'),
-            'Address' => preg_replace('/<[\/]?Address\>|\\n/','', $this->address->toXml()),
+            'Address' => $this->address->toXml("root"),
             'Contact' => $this->contact !== null ? $this->contact->toArray() : null
         ];
 

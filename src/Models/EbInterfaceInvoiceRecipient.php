@@ -8,16 +8,43 @@ use Ambersive\EbInterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\EbInterface\Models\EbInterfaceAddress;
 use Ambersive\EbInterface\Models\EbInterfaceContact;
 
-class EbInterfaceInvoiceRecipient {
+use Ambersive\Ebinterface\Models\EbInterfaceBase;
+
+use Spatie\ArrayToXml\ArrayToXml;
+use Ambersive\Ebinterface\Classes\EbInterfaceXml;
+
+class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
 
     public EbInterfaceCompanyLegal $companyLegal;
     public EbInterfaceAddress $address;
-    public EbInterfaceContact $contact;
+    public ?EbInterfaceContact $contact;
 
-    public function __construct(EbInterfaceCompanyLegal $companyLegal, EbInterfaceAddress $address, EbInterfaceContact $contact) {
+    public function __construct(EbInterfaceCompanyLegal $companyLegal, EbInterfaceAddress $address, ?EbInterfaceContact $contact = null) {
         $this->companyLegal = $companyLegal;
         $this->address = $address;
         $this->contact = $contact;
+    }
+
+    public function toXml(?String $container = null): String {
+
+        $data = ArrayToXml::convert($this->toArray(), 'InvoiceRecipient');
+        $xml = EbInterfaceXml::clean($data, $container);
+
+        return preg_replace('/<[\/]?Legal\>|\\n/','', $xml);
+
+    }
+
+    /**
+     * Transform the data into an array
+     *
+     * @return array
+     */
+    public function toArray():array {
+        return [
+            'Legal' => $this->companyLegal->toXml("root"),
+            'Address' => $this->address->toXml("root"),
+            'Contact' => $this->contact->toXml("root")
+        ];
     }
 
 }

@@ -62,11 +62,11 @@ class EbInterfaceInvoiceBiller extends EbInterfaceBase {
      *
      * @return String
      */
-    public function toXml(String $container = ""):String{
+    public function toXml(?String $container = ""):String{
 
         $data = [
             'VATIdentificationNumber' => $this->vatId,
-            'Address' => preg_replace('/<[\/]?Address\>|\\n/','', $this->address->toXml()),
+            'Address' => $this->address->toXml("root"),
             'Contact' => $this->contact !== null ? $this->contact->toArray() : null,
             'InvoiceRecipientsBillerID' => $this->billerId
         ];

@@ -10,7 +10,8 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceCountries;
 
-class EbInterfaceAddress {
+use Ambersive\Ebinterface\Models\EbInterfaceBase;
+class EbInterfaceAddress extends EbInterfaceBase {
 
     public String $name = "";
     public String $street = "";
@@ -48,9 +49,9 @@ class EbInterfaceAddress {
      *
      * @return String
      */
-    public function toXml():String {
+    public function toXml(String $container = ""): String {
 
-        $address = ArrayToXml::convert($this->toArray(), 'Address');
+        $address = ArrayToXml::convert($this->toArray(), $container === "" ? "Address" : $container);
         $address = str_replace("<Country>","<Country CountryCode='".$this->countryCode."'>", $address);
 
         return EbInterfaceXml::clean($address);

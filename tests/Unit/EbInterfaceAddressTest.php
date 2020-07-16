@@ -52,7 +52,7 @@ class EbInterfaceAddressTest extends TestCase
 
         $address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT");
         
-        $result = $address->toXml();
+        $result = $address->toXml("root");
 
         $this->assertNotFalse(strpos($result, "<Name>Manuel Pirker-Ihl</Name>"));
         $this->assertNotFalse(strpos($result, "<Street>Geylinggasse 15</Street>"));
