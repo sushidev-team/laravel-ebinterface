@@ -13,7 +13,6 @@ use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
 use Ambersive\Ebinterface\Models\EbInterfaceBase;
 
-
 use Illuminate\Validation\ValidationException;
 class EbInterfaceInvoiceBiller extends EbInterfaceBase {
 

@@ -20,7 +20,7 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT");
+        $this->address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT", "office@ambersive.com");
         $this->contact = new EbInterfaceContact("Mr", "Manuel Pirker-Ihl");
         $this->legal = new EbInterfaceCompanyLegal();
     }
@@ -77,7 +77,23 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
         );
 
     }
+    /**
+     * Test if to few arguemnts for the invoice recipient will throw an argument count exeception.
+     */
+    public function testIfInvoiceRecipientAddressWillThrowInInvalidExeceptionIfEmailIsMissing():void {
 
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+
+        $recipient = new EbInterfaceInvoiceRecipient(
+            $this->legal,
+            new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT")
+        );
+
+    }
+
+    /**
+     * Test if the InvoiceRecipient can create a valid xml output
+     */
     public function testIfInvoiceRecipientToXmlReturnsTheCorrectXmlOutput():void {
 
         $recipient = new EbInterfaceInvoiceRecipient(
@@ -90,8 +106,9 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
 
         $this->assertNotNull($xml);
 
+        $this->assertNotFalse(strpos($xml, '<Email>'));
         $this->assertNotFalse(strpos($xml, '<VATIdentificationNumber>ATU00000000</VATIdentificationNumber>'));
-        $this->assertNotFalse(strpos($xml, '<Address><Name>Manuel Pirker-Ihl</Name><Street>Geylinggasse 15</Street><Town>Vienna</Town><ZIP>1130</ZIP><Country CountryCode=\'AT\'>AT</Country></Address>'));
+        $this->assertNotFalse(strpos($xml, '<Address><Name>Manuel Pirker-Ihl</Name><Street>Geylinggasse 15</Street><Town>Vienna</Town><ZIP>1130</ZIP><Country CountryCode=\'AT\'>AT</Country><Email>office@ambersive.com</Email></Address>'));
         $this->assertNotFalse(strpos($xml, '<Contact><Salutation>Mr</Salutation><Name>Manuel Pirker-Ihl</Name></Contact>'));
         $this->assertFalse(strpos($xml, '<Address><Address>'));
 

@@ -2,6 +2,8 @@
 
 namespace Ambersive\Ebinterface\Models;
 
+use Validator;
+
 use Carbon\Carbon;
 
 use Ambersive\EbInterface\Models\EbInterfaceCompanyLegal;
@@ -13,6 +15,8 @@ use Ambersive\Ebinterface\Models\EbInterfaceBase;
 use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 
+use Illuminate\Validation\ValidationException;
+
 class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
 
     public EbInterfaceCompanyLegal $companyLegal;
@@ -23,6 +27,18 @@ class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
         $this->companyLegal = $companyLegal;
         $this->address = $address;
         $this->contact = $contact;
+
+        $data = array_merge(
+            $this->address->toArray()
+        );
+
+        $validator = Validator::make($data, [
+            'Email' => 'required|email:rfc,dns'
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
     }
 
     public function toXml(?String $container = null): String {
