@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Ambersive\Ebinterface\Classes\EbInterfaceInvoiceHandler;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
@@ -108,6 +110,38 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
         $this->assertNotNull($this->invoice->biller);
         $this->assertEquals("Manuel Pirker-XXX", $this->invoice->biller->contact->name);
+
+    }
+
+    /**
+     * Test the delivery section of the invoice
+     */
+    public function testIfInvoiceSetDeliveryAcceptsACallable():void {
+
+        $this->invoice->setDelivery(function($invoice) {
+            return new EbInterfaceInvoiceDelivery(
+                Carbon::now(),
+                $this->address->setEmail("office@ambersive.com"),
+                $this->contact
+            );
+        });
+
+        $this->assertNotNull($this->invoice->delivery);
+
+    }
+
+    /**
+     * Test if the invoice will accept the delivery object directly
+     */
+    public function testIfInvoiceSetDeliveryAcceptsDeliveryClass():void {
+
+        $this->invoice->setDelivery(new EbInterfaceInvoiceDelivery(
+            Carbon::now(),
+            $this->address->setEmail("office@ambersive.com"),
+            $this->contact
+        ));
+
+        $this->assertNotNull($this->invoice->delivery);
 
     }
 

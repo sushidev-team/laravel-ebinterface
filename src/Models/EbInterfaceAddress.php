@@ -45,6 +45,17 @@ class EbInterfaceAddress extends EbInterfaceBase {
     }
     
     /**
+     * Add email to the address
+     *
+     * @param  mixed $email
+     * @return EbInterfaceAddress
+     */
+    public function setEmail(String $email): EbInterfaceAddress {
+        $this->email = $email;
+        return $this;
+    }
+    
+    /**
      * Export the array to an valid xml for ebInterface
      *
      * @return String
