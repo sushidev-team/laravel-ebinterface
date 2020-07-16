@@ -10,7 +10,7 @@ class EbInterfaceXml {
      * @param  mixed $str
      * @return String
      */
-    public static function clean(String $str):String {
+    public static function clean(String $str, ?String $container = "root"):String {
 
         $str = str_replace("<?xml version=\"1.0\"?>","", $str);
 
@@ -18,6 +18,11 @@ class EbInterfaceXml {
         $str = preg_replace('/&gt;/','>', $str);
 
         $str = str_replace("\n", "", $str);
+
+        if ($container === "root") {
+            $str = preg_replace('/<root>/','', $str);
+            $str = preg_replace('/<\/root>/','', $str);
+        }
 
         return $str;
 

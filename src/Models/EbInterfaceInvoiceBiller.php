@@ -11,10 +11,11 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
+use Ambersive\Ebinterface\Models\EbInterfaceBase;
+
 
 use Illuminate\Validation\ValidationException;
-
-class EbInterfaceInvoiceBiller {
+class EbInterfaceInvoiceBiller extends EbInterfaceBase {
 
     public ?String $vatId = null;
     public ?String $billerId = null;
@@ -61,7 +62,7 @@ class EbInterfaceInvoiceBiller {
      *
      * @return String
      */
-    public function toXml():String{
+    public function toXml(String $container = ""):String{
 
         $data = [
             'VATIdentificationNumber' => $this->vatId,
@@ -76,7 +77,7 @@ class EbInterfaceInvoiceBiller {
 
         $biller = ArrayToXml::convert($data, 'Biller');
 
-        return EbInterfaceXml::clean($biller);
+        return EbInterfaceXml::clean($biller, $container);
 
     }
 

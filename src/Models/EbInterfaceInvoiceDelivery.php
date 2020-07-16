@@ -10,7 +10,8 @@ use Ambersive\Ebinterface\Models\EbInterfaceContact;
 
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 
-class EbInterfaceInvoiceDelivery {
+use Ambersive\Ebinterface\Models\EbInterfaceBase;
+class EbInterfaceInvoiceDelivery extends EbInterfaceBase{
 
     public Carbon $date;
     public EbInterfaceAddress $address;
@@ -30,7 +31,7 @@ class EbInterfaceInvoiceDelivery {
      *
      * @return String
      */
-    public function toXml():String{
+    public function toXml(String $container = ""):String{
 
         $data = [
             'Date' => $this->date->format('Y-m-d'),
@@ -44,7 +45,7 @@ class EbInterfaceInvoiceDelivery {
 
         $delivery = ArrayToXml::convert($data, 'Delivery');
 
-        return EbInterfaceXml::clean($delivery);
+        return EbInterfaceXml::clean($delivery, $container);
 
     }
 

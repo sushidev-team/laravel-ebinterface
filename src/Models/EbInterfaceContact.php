@@ -10,7 +10,9 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceCountries;
 
-class EbInterfaceContact {
+use Ambersive\Ebinterface\Models\EbInterfaceBase;
+
+class EbInterfaceContact extends EbInterfaceBase {
 
     public String $salutation = "";
     public String $name = "";
@@ -25,10 +27,10 @@ class EbInterfaceContact {
      *
      * @return String
      */
-    public function toXml():String {
+    public function toXml(String $container = ""):String {
 
-        $contact = ArrayToXml::convert($this->toArray(), 'Contact');
-        return EbInterfaceXml::clean($contact);
+        $contact = ArrayToXml::convert($this->toArray(), $container === "" ? "Contact" : $container);
+        return EbInterfaceXml::clean($contact,);
 
     }
     

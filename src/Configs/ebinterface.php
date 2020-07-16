@@ -25,6 +25,6 @@ return [
         'email'             => env('EBINTERFACE_BILLER_EMAIL', null),
         'salutation'        => env('EBINTERFACE_BILLER_SALUTATION', null),
         'salutation_name'   => env('EBINTERFACE_BILLER_SALUTATION_NAME', null),
-    ]
+    ],
 
 ];
