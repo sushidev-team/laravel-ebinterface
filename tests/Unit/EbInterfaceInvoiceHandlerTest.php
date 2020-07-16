@@ -12,6 +12,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
+use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
@@ -26,6 +27,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     public $address;
     public $contact;
+    public $legal;
 
     protected function setUp(): void
     {
@@ -36,6 +38,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         // Test data
         $this->address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT", "office@ambersive.com");
         $this->contact = new EbInterfaceContact("Mr", "Manuel Pirker-XXX");
+        $this->legal = new EbInterfaceCompanyLegal();
 
     }
 
@@ -142,6 +145,38 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         ));
 
         $this->assertNotNull($this->invoice->delivery);
+
+    }
+
+    /**
+     * Test if the invoice will accept the recipient as callable
+     */
+    public function testIfInvoiceSetRecipientAcceptCallable(): void {
+
+        $this->invoice->setRecipient(function($invoice){
+            return new EbInterfaceInvoiceRecipient(
+                $this->legal,
+                $this->address,
+                $this->contact
+            );
+        });
+
+        $this->assertNotNull($this->invoice->recipient);
+
+    }
+
+    /**
+     * Test if the invoice will accept the recipient as callable
+     */
+    public function testIfInvoiceSetRecipientAcceptObject(): void {
+
+        $this->invoice->setRecipient(new EbInterfaceInvoiceRecipient(
+            $this->legal,
+            $this->address,
+            $this->contact
+        ));
+
+        $this->assertNotNull($this->invoice->recipient);
 
     }
 

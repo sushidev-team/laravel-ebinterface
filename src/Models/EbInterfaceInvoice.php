@@ -94,7 +94,7 @@ class EbInterfaceInvoice {
      * @param  mixed $recipient
      * @return EbInterfaceInvoice
      */
-    public function setInvoiceRecipient($recipient): EbInterfaceInvoice {
+    public function setRecipient($recipient): EbInterfaceInvoice {
 
         if (is_callable($recipient)) {
             $this->recipient = $recipient($this);
