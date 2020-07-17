@@ -12,6 +12,9 @@ Changes between versions will be tracked in the [CHANGELOG](CHANGELOG.md).
 composer require ambersive/ebinterface
 ```
 
+## Documentation
+This package is based on the invoice standard [EBINTERFACE 5.0](https://www.wko.at/service/netzwerke/ebInvoice_5p0.pdf).
+
 ## Feedback
 
 Please feel free to give us feedback or any improvement suggestions.
