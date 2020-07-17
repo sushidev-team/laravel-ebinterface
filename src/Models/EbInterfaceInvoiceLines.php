@@ -27,8 +27,17 @@ class EbInterfaceInvoiceLines  {
      * @return void
      */
     public function remove(int $index = 0, int $amount = 1){
-        \array_splice($this->line, $index, $amount);
+        \array_splice($this->lines, $index, $amount);
         return $this;
+    }
+    
+    /**
+     * Returns the amount of elements in the list of lines
+     *
+     * @return int
+     */
+    public function count(): int {
+        return collect($this->lines)->count();
     }
 
 }
