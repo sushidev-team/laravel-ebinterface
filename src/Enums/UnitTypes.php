@@ -6,7 +6,7 @@ use MyCLabs\Enum\Enum;
 
 /**
  * Based on the recommendation
- * this list provides a full list of http://www.ebinterface.at/download/documentation/ebInvoice_4p3.pdf
+ * this list provides a full list of https://www.wko.at/service/netzwerke/ebInvoice_5p0.pdf
  */
 
 class UnitTypes extends Enum
@@ -81,5 +81,24 @@ class UnitTypes extends Enum
     private const ENERGY = [
         'KWH', // kilowatt hour
     ];
+    
+    /**
+     * Will return all enum values
+     *
+     * @return array
+     */
+    public static function getAll(): array {
+
+        return [
+            ...self::WEIGHT,
+            ...self::LENGTH,
+            ...self::VOLUME,
+            ...self::NUMERIC,
+            ...self::FILESIZE,
+            ...self::TIME,
+            ...self::CURRENCY
+        ];
+
+    }
 
 }

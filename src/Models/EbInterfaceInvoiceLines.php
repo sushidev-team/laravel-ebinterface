@@ -14,8 +14,13 @@ class EbInterfaceInvoiceLines  {
      * @param  mixed $line
      * @return void
      */
-    public function add(EbInterfaceInvoiceLine $line) {
+    public function add(EbInterfaceInvoiceLine $line, ?Callable $callable = null) {
         $this->lines[] = $line;
+
+        if (is_callable($callable)) {
+            $callable($line, sizeOf($this->lines) - 1);
+        }
+
         return $this;
     }
     

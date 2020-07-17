@@ -20,19 +20,6 @@ class EbInterfaceTestTaxCodesEnumTest extends TestCase
     {
         parent::tearDown();
     }
-    
-    /**
-     * Test if CODES contains a list of items
-     */
-    public function testIfEnumCodesReturnsArray(): void {
-
-        $result = TaxCodes::CODES();
-        
-        $this->assertNotNull($result);
-        $this->assertTrue(is_array($result->toArray()));
-        $this->assertNotEmpty(is_array($result->toArray()));
-
-    }
 
     /**
      * Test if TAXRATES contains a list of items

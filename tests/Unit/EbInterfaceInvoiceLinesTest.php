@@ -40,6 +40,49 @@ class EbInterfaceInvoiceLinesTest extends TestCase
     }
 
     /**
+     * Test if multiple lines can be added
+     */
+    public function testIfInvoiceLineCanAddMultipleLines(): void {
+
+        $amount = rand(2, 10);
+        $count = 0;
+
+        while($count < $amount) {
+            $this->lines->add(new EbInterfaceInvoiceLine());
+            $count++;
+        }
+
+        $this->assertNotNull($this->lines->lines);
+        $this->assertNotEmpty($this->lines->lines);
+        $this->assertEquals($amount, $this->lines->count());
+
+    }
+
+    /**
+     * Test if the add line method will accepts a callable as second param which will be 
+     * passed after adding the line
+     */
+    public function testIfInvoiceAddMethodAlsoAcceptsACallableAsSecondParam(): void {
+
+        $called = false;
+
+        $this->lines->add(new EbInterfaceInvoiceLine(), function($line, $lineIndex) use (&$called) {
+
+            $this->assertNotNull($line);
+            $this->assertEquals(0, $lineIndex);
+
+            $called = true;
+
+        });
+
+        $this->assertNotNull($this->lines->lines);
+        $this->assertNotEmpty($this->lines->lines);
+        $this->assertEquals(1, $this->lines->count());
+        $this->assertTrue($called);
+
+    }
+
+    /**
      * Test a line be removed by using the index
      */
     public function testIfInvoiceLineCanBeRemoved(): void {
