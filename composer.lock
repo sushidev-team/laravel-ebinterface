@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b6f3307fe32d230110d55e684f14832",
+    "content-hash": "ac369f70b24c5cbe0046201ee0f0a70c",
     "packages": [
         {
             "name": "brick/math",
@@ -693,6 +693,52 @@
                 "psr-3"
             ],
             "time": "2020-07-09T08:32:21+00:00"
+        },
+        {
+            "name": "myclabs/php-enum",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/php-enum.git",
+                "reference": "5a46133e2e9af01308f051d4be65e16fce3c8da1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/5a46133e2e9af01308f051d4be65e16fce3c8da1",
+                "reference": "5a46133e2e9af01308f051d4be65e16fce3c8da1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7",
+                "squizlabs/php_codesniffer": "1.*",
+                "vimeo/psalm": "^3.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MyCLabs\\Enum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP Enum contributors",
+                    "homepage": "https://github.com/myclabs/php-enum/graphs/contributors"
+                }
+            ],
+            "description": "PHP Enum implementation",
+            "homepage": "http://github.com/myclabs/php-enum",
+            "keywords": [
+                "enum"
+            ],
+            "time": "2020-06-15T16:00:21+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -5366,6 +5412,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "spatie/array-to-xml": 20,
+        "myclabs/php-enum": 20,
         "illuminate/support": 20,
         "laravel/framework": 20,
         "ambersive/keepachangelog": 20,

@@ -16,8 +16,11 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
 
     public String $description = "";
 
-    public float  $quantity = 0;
+    public float  $quantity = 0.0;
     public String $quantityType = "";
+
+    public float $unitPrice = 1.0;
+
 
     public function __construct() {
         
