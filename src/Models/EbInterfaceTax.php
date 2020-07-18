@@ -63,8 +63,9 @@ class EbInterfaceTax extends EbInterfaceBase {
      */
     public function toXml(?String $container = ""):String {
 
-        $tax = ArrayToXml::convert($this->toArray(), $container === "" ? "Contact" : $container);
+        $tax = ArrayToXml::convert($this->toArray(), $container === "" ? "TaxItem" : $container);
         $result = EbInterfaceXml::clean($tax, $container);
+        $result = str_replace("<TaxPercent>", "<TaxPercent TaxCategoryCode='".$this->type."'>", $result);
 
         return $result;
     }
@@ -76,8 +77,8 @@ class EbInterfaceTax extends EbInterfaceBase {
      */
     public function toArray():array {
         return [
-            'Salutation' => $this->salutation,
-            'Name' => $this->name
+            'TaxableAmount' => $this->value,
+            'TaxPercent' => $this->percent
         ];
     }
 

@@ -113,4 +113,29 @@ class EbInterfaceTaxTest extends TestCase
 
     }
 
+    /**
+     * Test if the toXml method generates a correct xml part
+     */
+    public function testIfTaxGenerateCorrectOutput(): void {
+
+        $tax = new EbInterfaceTax();
+
+        $xml = $tax->toXml();
+        $this->assertEquals("<TaxItem><TaxableAmount>0</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent></TaxItem>", $xml);
+
+    }
+
+    /**
+     * Test if the toXml method can also skip the parent item
+     */
+    public function testIfTaxToXmlCanRemoveTheParent(): void {
+
+        $tax = new EbInterfaceTax();
+
+        $xml = $tax->toXml("root");
+        $this->assertEquals("<TaxableAmount>0</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent>", $xml);
+
+
+    }
+
 }
