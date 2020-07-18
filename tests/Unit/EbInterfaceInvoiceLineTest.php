@@ -165,6 +165,28 @@ class EbInterfaceInvoiceLineTest extends TestCase
 
     }
 
+    /**
+     * Test if the container XML can be removed
+     */
+    public function testIfInvoiceLineToXmlPassingRootWillCreateXmlWithoutContainer(): void {
+
+        $xml = $this->line->setQuantity('STK', 1)->toXml("root");
+        $this->assertEquals("<Description></Description><Quantity>1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1</LineItemAmount>", $xml);
+
+    }
+
+    /**
+     * Test if the OrderID can be added to the XML
+     */
+    public function testIfInvoiceLineToXmlContainsOrderReferences(): void {
+
+        $this->line->setOrderReference("XXX");
+
+        $xml = $this->line->setQuantity('STK', 1)->toXml("root");
+        $this->assertEquals("<Description></Description><Quantity>1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1</LineItemAmount><InvoiceRecipientsOrderReference><OrderID>XXX</OrderID><OrderPositionNumber>0</OrderPositionNumber></InvoiceRecipientsOrderReference>", $xml);
+
+    }
+
     //TODO: Create mssing tests for the xml generation
 
 }

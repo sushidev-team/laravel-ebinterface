@@ -45,4 +45,15 @@ class EbInterfaceInvoiceLines  {
         return collect($this->lines)->count();
     }
 
+
+    public function toXml(?String $container = ""): String {
+
+        $lines = collect($this->lines)->map(function($line) use ($container){
+            return $line->toXml($container);
+        });
+
+        return "<HeaderDescription>$this->header</HeaderDescription>".implode('', $lines->toArray())."<FooterDescription>$this->footer</FooterDescription>";
+
+    }
+
 }

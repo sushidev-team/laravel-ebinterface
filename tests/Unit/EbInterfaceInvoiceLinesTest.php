@@ -101,4 +101,18 @@ class EbInterfaceInvoiceLinesTest extends TestCase
 
     }
 
+    public function testIfInvoiceToXmlWillCreateValidXML(): void {
+
+        $this->lines->add(new EbInterfaceInvoiceLine());
+        $this->lines->add(new EbInterfaceInvoiceLine());
+
+        $xml = $this->lines->toXml("ItemListItem");
+
+        $this->assertNotNull($xml);
+
+        $this->assertNotFalse(strpos($xml, "<HeaderDescription></HeaderDescription>"));
+        // TODO: Add missing tests
+
+    }
+
 }
