@@ -5,6 +5,7 @@ namespace AMBERSIVE\Ebinterface\Tests\Unit;
 use Carbon\Carbon;
 
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLine;
+use Ambersive\Ebinterface\Models\EbInterfaceTax;
 
 use AMBERSIVE\Tests\TestCase;
 
@@ -84,6 +85,28 @@ class EbInterfaceInvoiceLineTest extends TestCase
         // Tests
         $this->assertNotEquals($current, $this->line->articleNr);
         $this->assertEquals("TEST12", $this->line->articleNr);
+
+    }
+
+    /**
+     * Test if the tax item can be set.
+     */
+    public function testIfInvoiceLineCanSetTax(): void {
+
+        $this->line->setTax(new EbInterfaceTax('S', 20, 100.0));
+        $this->assertNotNull($this->line->tax);
+
+    }
+
+    /**
+     * Tet if the tax cannot be set for this set item
+     */
+    public function testIfInvoiceLineCannotSetTaxDueValidationExeception(): void {
+
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+
+        $this->line->setTax(new EbInterfaceTax('XX', 20, 100.0));
+        $this->assertNull($this->line->tax);
 
     }
 

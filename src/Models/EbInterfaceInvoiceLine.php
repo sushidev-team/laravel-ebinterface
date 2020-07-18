@@ -12,6 +12,9 @@ use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Enums\UnitTypes;
 
 use Ambersive\Ebinterface\Models\EbInterfaceBase;
+use Ambersive\Ebinterface\Models\EbInterfaceTax;
+
+use Ambersive\Ebinterface\Enums\TaxCodes;
 
 class EbInterfaceInvoiceLine extends EbInterfaceBase {
 
@@ -23,6 +26,7 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
 
     public float $unitPrice = 1.0;
 
+    public ?EbInterfaceTax $tax = null;
 
     public function __construct() {
         
@@ -84,6 +88,17 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
         $this->articleNr = $articleNr;
         return $this;
 
+    }
+    
+    /**
+     * Set the tax for this item
+     *
+     * @param  mixed $tax
+     * @return EbInterfaceInvoiceLine
+     */
+    public function setTax(EbInterfaceTax $tax): EbInterfaceInvoiceLine {
+        $this->tax = $tax;
+        return $this;
     }
 
 }
