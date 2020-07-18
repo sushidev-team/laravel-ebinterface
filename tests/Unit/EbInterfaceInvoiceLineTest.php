@@ -88,6 +88,8 @@ class EbInterfaceInvoiceLineTest extends TestCase
 
     }
 
+
+
     /**
      * Test if the tax item can be set.
      */
@@ -109,5 +111,60 @@ class EbInterfaceInvoiceLineTest extends TestCase
         $this->assertNull($this->line->tax);
 
     }
+
+    /**
+     * Test if the order refernce values can be set
+     */
+    public function testIfInvoiceLineCanSetOrderReferences(): void {
+
+        $this->line->setOrderReference("XXX", 2);
+
+        $this->assertNotNull($this->line->orderID);
+        $this->assertNotNull($this->line->orderPositionNr);
+
+        $this->assertEquals("XXX", $this->line->orderID);
+        $this->assertEquals(2, $this->line->orderPositionNr);
+
+    }
+
+    /**
+     * Test if the order refernce values can be set even the second param is missing
+     */
+    public function testIfInvoiceLineCanSetOrderReferencesEvenIfSecondParamIsMissing(): void {
+
+        $this->line->setOrderReference("XXX");
+
+        $this->assertNotNull($this->line->orderID);
+        $this->assertNotNull($this->line->orderPositionNr);
+
+        $this->assertEquals("XXX", $this->line->orderID);
+        $this->assertEquals(0, $this->line->orderPositionNr);
+
+    }
+
+    /**
+     * Test if the the array returns values
+     */
+    public function testIfInvoiceLineToArrayReturnsCorrectValues(): void {
+
+        $result = $this->line->setQuantity('STK', 1)->toArray();
+
+        $this->assertEquals(4, sizeOf($result));
+        $this->assertEquals(1.0, data_get($result, 'LineItemAmount'));
+        $this->assertEquals(1.0, data_get($result, 'Quantity'));
+
+    }
+
+    /** 
+     * Test a basic XML creation
+     */
+    public function testIfInvoiceLineToXmlCreatesAValidString(): void {
+
+        $xml = $this->line->setQuantity('STK', 1)->toXml();
+        $this->assertEquals("<ListLineItem><Description></Description><Quantity>1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1</LineItemAmount></ListLineItem>", $xml);
+
+    }
+
+    //TODO: Create mssing tests for the xml generation
 
 }

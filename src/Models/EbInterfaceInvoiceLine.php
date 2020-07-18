@@ -10,11 +10,10 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 
 use Ambersive\Ebinterface\Enums\UnitTypes;
+use Ambersive\Ebinterface\Enums\TaxCodes;
 
 use Ambersive\Ebinterface\Models\EbInterfaceBase;
 use Ambersive\Ebinterface\Models\EbInterfaceTax;
-
-use Ambersive\Ebinterface\Enums\TaxCodes;
 
 class EbInterfaceInvoiceLine extends EbInterfaceBase {
 
@@ -27,6 +26,9 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
     public float $unitPrice = 1.0;
 
     public ?EbInterfaceTax $tax = null;
+
+    public ?String $orderID = null;
+    public ?int $orderPositionNr = 0;
 
     public function __construct() {
         
@@ -99,6 +101,67 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
     public function setTax(EbInterfaceTax $tax): EbInterfaceInvoiceLine {
         $this->tax = $tax;
         return $this;
+    }
+  
+    /**
+     * Set order reference values
+     *
+     * @param  mixed $id
+     * @param  mixed $orderPositionNr
+     * @return EbInterfaceInvoiceLine
+     */
+    public function setOrderReference(String $id, ?int $orderPositionNr = 0): EbInterfaceInvoiceLine {
+        $this->orderID = $id;
+        $this->orderPositionNr = $orderPositionNr;
+        return $this;
+    }
+    
+    /**
+     * Get the NET value for the line
+     *
+     * @return float
+     */
+    public function getLineAmount(): float {
+
+        $value = $this->quantity * $this->unitPrice;
+        return $value;
+
+    }
+
+    public function toArray(): array {
+
+        $data = [
+            'Description' => $this->description,
+            'Quantity' => $this->quantity,
+            'UnitPrice' => $this->unitPrice,
+            "LineItemAmount" => $this->getLineAmount()
+        ];
+
+        if ($this->tax !== null) {
+
+            $data['TaxItem'] = $this->tax->toXml();
+
+        }
+
+        if ($this->orderID != null) {
+            $data['InvoiceRecipientsOrderReference'] = [
+                'OrderID' => $this->orderID,
+                'OrderPositionNumber' => $this->orderPositionNr
+            ];
+        }
+
+        return $data;
+
+    }
+
+    public function toXml(?String $container = ""): String {
+
+        $tax = ArrayToXml::convert($this->toArray(), $container === "" ? "ListLineItem" : $container);
+        $result = EbInterfaceXml::clean($tax, $container);
+
+        return $result;
+
+        
     }
 
 }

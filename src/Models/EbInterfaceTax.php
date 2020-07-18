@@ -43,8 +43,9 @@ class EbInterfaceTax extends EbInterfaceBase {
      * @param  mixed $attr
      * @return void
      */
-    public function setValue($attr) {
+    public function setValue($attr): EbInterfaceTax {
         is_callable($attr) ? $this->value = $attr($this) : $this->value = floatval($attr);
+        return $this;
     }
     
     /**
