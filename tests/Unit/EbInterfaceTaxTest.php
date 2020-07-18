@@ -60,4 +60,57 @@ class EbInterfaceTaxTest extends TestCase
 
     }
 
+    /**
+     * Test if the Tax class accepts a callable as third parameter
+     */
+    public function testIfTaxItemAcceptsACallable():void {
+
+        $tax = new EbInterfaceTax('S', 20, function($t){
+            return 1000;
+        });
+
+        $this->assertEquals(200, $tax->getTax());
+
+    }
+
+    /**
+     * Test if the tax item 
+     */
+    public function testIfTaxItemHasDefaultValues(): void {
+
+        $tax = new EbInterfaceTax();
+
+        $this->assertNotNull($tax);
+        $this->assertEquals("S", $tax->type);
+        $this->assertEquals(20.0, $tax->percent);
+        $this->assertEquals(0.0, $tax->value);
+
+    }
+
+    /**
+     * Test if the tax item has method to set the value that should be taxable
+     */
+    public function testIfTaxItemHasMethodToSetValue(): void {
+
+        $tax = new EbInterfaceTax();
+        $tax->setValue(1000);
+
+        $this->assertEquals(1000.0, $tax->value);
+
+    }
+
+    /**
+     * Test if the setValue also accepts callable
+     */
+    public function testIfTaxItemHasMethodToSetValueAndAcceptsCallable():void {
+
+        $tax = new EbInterfaceTax();
+        $tax->setValue(function($t) {
+            return 1000;
+        });
+
+        $this->assertEquals(1000.0, $tax->value);
+
+    }
+
 }
