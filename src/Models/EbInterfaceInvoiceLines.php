@@ -7,6 +7,16 @@ class EbInterfaceInvoiceLines  {
     public String $header = "";
     public String $footer = "";
     public array $lines = [];
+
+    public function setHeader(String $header): EbInterfaceInvoiceLines{
+        $this->header = $header;
+        return $this;
+    }
+
+    public function setFooter(String $footer): EbInterfaceInvoiceLines{
+        $this->footer = $footer;
+        return $this;
+    }
         
     /**
      * Add a line to the invoice lines
@@ -52,7 +62,7 @@ class EbInterfaceInvoiceLines  {
             return $line->toXml($container);
         });
 
-        return "<HeaderDescription>$this->header</HeaderDescription>".implode('', $lines->toArray())."<FooterDescription>$this->footer</FooterDescription>";
+        return "<ItemList><HeaderDescription>$this->header</HeaderDescription>".implode('', $lines->toArray())."<FooterDescription>$this->footer</FooterDescription></ItemList>";
 
     }
 

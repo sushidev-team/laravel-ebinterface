@@ -101,6 +101,9 @@ class EbInterfaceInvoiceLinesTest extends TestCase
 
     }
 
+    /**
+     * Test if the lines method will create the correct xml for the detail
+     */
     public function testIfInvoiceToXmlWillCreateValidXML(): void {
 
         $this->lines->add(new EbInterfaceInvoiceLine());
@@ -111,8 +114,44 @@ class EbInterfaceInvoiceLinesTest extends TestCase
         $this->assertNotNull($xml);
 
         $this->assertNotFalse(strpos($xml, "<HeaderDescription></HeaderDescription>"));
-        // TODO: Add missing tests
+        $this->assertNotFalse(strpos($xml, "<FooterDescription></FooterDescription>"));
+
+        $this->assertEquals("<ItemList><HeaderDescription></HeaderDescription><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><FooterDescription></FooterDescription></ItemList>", $xml);
 
     }
+
+    /**
+     * Test if the header from the item list can be set 
+     */
+    public function testIfInvoiceItemListCanHaveAHeaderDescription():void {
+
+        $this->lines->setHeader("TEST 1");
+
+        $xml = $this->lines->toXml("ItemListItem");
+
+        $this->assertNotNull($xml);
+        $this->assertEquals("<ItemList><HeaderDescription>TEST 1</HeaderDescription><FooterDescription></FooterDescription></ItemList>", $xml);
+        $this->assertNotFalse(strpos($xml, "<HeaderDescription>TEST 1</HeaderDescription>"));
+
+    }
+
+    /**
+     * Test if the footer from the item list can be set
+     */
+    public function testIfInvoiceItemListCanHaveAFooterDescription():void {
+
+        $this->lines->setFooter("TEST 2");
+
+        $xml = $this->lines->toXml("ItemListItem");
+
+        $this->assertNotNull($xml);
+        $this->assertEquals("<ItemList><HeaderDescription></HeaderDescription><FooterDescription>TEST 2</FooterDescription></ItemList>", $xml);
+        $this->assertNotFalse(strpos($xml, "<FooterDescription>TEST 2</FooterDescription>"));
+
+    }
+
+
+
+
 
 }
