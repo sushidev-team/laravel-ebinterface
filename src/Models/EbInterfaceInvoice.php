@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 
 class EbInterfaceInvoice {
 
@@ -18,6 +19,7 @@ class EbInterfaceInvoice {
 
     public String $header = "";
     public String $footer = "";
+    public ?EbInterfaceInvoiceLines $lines = null;
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -125,12 +127,21 @@ class EbInterfaceInvoice {
     public function setPaymentConditions(): EbInterfaceInvoice {
         return $this;
     }
-
-    public function addLine(): EbInterfaceInvoice {
-        return $this;
-    }
-
-    public function removeLine(): EbInterfaceInvoice {
+    
+    /**
+     * Set the lines
+     *
+     * @param  mixed $value
+     * @return EbInterfaceInvoice
+     */
+    public function setLines($value = null): EbInterfaceInvoice {
+        if ($value != null && is_callable($value)) {
+            $this->lines = new EbInterfaceInvoiceLines();
+            $value($this, $this->lines);            
+        }
+        else if ($value instanceof EbInterfaceInvoiceLines) {
+            $this->lines = $value;
+        }
         return $this;
     }
 

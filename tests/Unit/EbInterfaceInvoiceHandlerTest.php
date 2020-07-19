@@ -13,6 +13,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
@@ -203,5 +204,55 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         $this->assertEquals("YYY", $this->invoice->footer);
 
     }
+    
+    /**
+     * Test if the setLines accepts a callable 
+     */
+    public function testIfInvoiceSetLinesAcceptsCallable():void {
+
+        $called = false;
+
+        $this->invoice->setLines(function($invoice) use (&$called) {
+            $called = true;
+        });
+
+        $this->assertTrue($called);
+        $this->assertTrue($this->invoice->lines instanceof EbInterfaceInvoiceLines);
+
+    }
+
+    /**
+     * Test if a setLines allows add a line from wihtin the callable
+     */
+    public function testIfInvoiceSetLinesWithCallableAllowsToAddALine():void {
+
+        $this->invoice->setLines(function($invoice, $lines) use (&$called) {
+            
+            $lines->add(null, function($line){
+
+                $line->setQuantity("STK", 100);
+
+            });
+
+        });
+
+        $this->assertEquals($this->invoice->lines->count(), 1);
+
+    }
+
+    /**
+     * Test if the setLines accepts a class
+     */
+    public function testIfInvoiceSetLinesAcceptsAClass():void {
+
+        $lines = new EbInterfaceInvoiceLines();
+
+        $this->invoice->setLines($lines);
+
+        $this->assertNotNull($this->invoice->lines);
+        $this->assertTrue($this->invoice->lines instanceof EbInterfaceInvoiceLines);
+
+    }
+    
 
 }   

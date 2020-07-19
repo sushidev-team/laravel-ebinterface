@@ -187,6 +187,4 @@ class EbInterfaceInvoiceLineTest extends TestCase
 
     }
 
-    //TODO: Create mssing tests for the xml generation
-
 }
