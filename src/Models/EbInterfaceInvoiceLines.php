@@ -6,15 +6,53 @@ class EbInterfaceInvoiceLines  {
 
     public String $header = "";
     public String $footer = "";
-    public array $lines = [];
 
-    public function setHeader(String $header): EbInterfaceInvoiceLines{
-        $this->header = $header;
+    public String $headerItemList = "";
+    public String $footerItemList = "";
+
+    public array $lines = [];
+    
+    /**
+     * Set the header
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoiceLines
+     */
+    public function setHeader(String $text): EbInterfaceInvoiceLines{
+        $this->header = $text;
         return $this;
     }
-
-    public function setFooter(String $footer): EbInterfaceInvoiceLines{
-        $this->footer = $footer;
+    
+    /**
+     * Set the footer
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoiceLines
+     */
+    public function setFooter(String $text): EbInterfaceInvoiceLines{
+        $this->footer = $text;
+        return $this;
+    }
+    
+    /**
+     * Set the header in the item list
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoiceLines
+     */
+    public function setHeaderItemList(String $text): EbInterfaceInvoiceLines{
+        $this->headerItemList = $text;
+        return $this;
+    }
+    
+    /**
+     * Set the footer in the item list
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoiceLines
+     */
+    public function setFooterItemList(String $text): EbInterfaceInvoiceLines{
+        $this->footerItemList = $text;
         return $this;
     }
         
@@ -56,13 +94,31 @@ class EbInterfaceInvoiceLines  {
     }
 
 
+    /**
+     * Transform the lines to a valid xml block
+     */
     public function toXml(?String $container = ""): String {
 
         $lines = collect($this->lines)->map(function($line) use ($container){
             return $line->toXml($container);
         });
 
-        return "<ItemList><HeaderDescription>$this->header</HeaderDescription>".implode('', $lines->toArray())."<FooterDescription>$this->footer</FooterDescription></ItemList>";
+        $linesXml = [];
+
+        $this->header !== "" ? $linesXml[] = "<HeaderDescription>$this->header</HeaderDescription>" : null;
+
+        // item list starts here
+        $linesXml[] = "<ItemList>";
+
+        $this->headerItemList !== "" ? $linesXml[] = "<HeaderDescription>$this->headerItemList</HeaderDescription>" : null;
+        $linesXml[] = implode('', $lines->toArray());
+        $this->footerItemList !== "" ? $linesXml[] = "<FooterDescription>$this->footerItemList</FooterDescription>" : null;
+
+        $linesXml[] = "</ItemList>";
+
+        $this->footer !== "" ? $linesXml[] = "<FooterDescription>$this->footer</FooterDescription>" : null;
+
+        return implode("", $linesXml);
 
     }
 

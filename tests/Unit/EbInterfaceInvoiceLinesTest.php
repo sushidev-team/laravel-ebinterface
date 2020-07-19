@@ -113,10 +113,10 @@ class EbInterfaceInvoiceLinesTest extends TestCase
 
         $this->assertNotNull($xml);
 
-        $this->assertNotFalse(strpos($xml, "<HeaderDescription></HeaderDescription>"));
-        $this->assertNotFalse(strpos($xml, "<FooterDescription></FooterDescription>"));
+        $this->assertFalse(strpos($xml, "<HeaderDescription></HeaderDescription>"));
+        $this->assertFalse(strpos($xml, "<FooterDescription></FooterDescription>"));
 
-        $this->assertEquals("<ItemList><HeaderDescription></HeaderDescription><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><FooterDescription></FooterDescription></ItemList>", $xml);
+        $this->assertEquals("<ItemList><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem></ItemList>", $xml);
 
     }
 
@@ -125,12 +125,12 @@ class EbInterfaceInvoiceLinesTest extends TestCase
      */
     public function testIfInvoiceItemListCanHaveAHeaderDescription():void {
 
-        $this->lines->setHeader("TEST 1");
+        $this->lines->setHeaderItemList("TEST 1");
 
         $xml = $this->lines->toXml("ItemListItem");
 
         $this->assertNotNull($xml);
-        $this->assertEquals("<ItemList><HeaderDescription>TEST 1</HeaderDescription><FooterDescription></FooterDescription></ItemList>", $xml);
+        $this->assertEquals("<ItemList><HeaderDescription>TEST 1</HeaderDescription></ItemList>", $xml);
         $this->assertNotFalse(strpos($xml, "<HeaderDescription>TEST 1</HeaderDescription>"));
 
     }
@@ -140,18 +140,44 @@ class EbInterfaceInvoiceLinesTest extends TestCase
      */
     public function testIfInvoiceItemListCanHaveAFooterDescription():void {
 
+        $this->lines->setFooterItemList("TEST 2");
+
+        $xml = $this->lines->toXml("ItemListItem");
+
+        $this->assertNotNull($xml);
+        $this->assertEquals("<ItemList><FooterDescription>TEST 2</FooterDescription></ItemList>", $xml);
+        $this->assertNotFalse(strpos($xml, "<FooterDescription>TEST 2</FooterDescription>"));
+
+    }
+
+/**
+     * Test if the header from the item list can be set 
+     */
+    public function testIfInvoiceItemListCanHaveAHeaderDescriptionOnGlobalLevel():void {
+
+        $this->lines->setHeader("TEST 1");
+
+        $xml = $this->lines->toXml("ItemListItem");
+
+        $this->assertNotNull($xml);
+        $this->assertEquals("<HeaderDescription>TEST 1</HeaderDescription><ItemList></ItemList>", $xml);
+        $this->assertNotFalse(strpos($xml, "<HeaderDescription>TEST 1</HeaderDescription>"));
+
+    }
+
+    /**
+     * Test if the footer from the item list can be set
+     */
+    public function testIfInvoiceItemListCanHaveAFooterDescriptionOnGlobalLevel():void {
+
         $this->lines->setFooter("TEST 2");
 
         $xml = $this->lines->toXml("ItemListItem");
 
         $this->assertNotNull($xml);
-        $this->assertEquals("<ItemList><HeaderDescription></HeaderDescription><FooterDescription>TEST 2</FooterDescription></ItemList>", $xml);
+        $this->assertEquals("<ItemList></ItemList><FooterDescription>TEST 2</FooterDescription>", $xml);
         $this->assertNotFalse(strpos($xml, "<FooterDescription>TEST 2</FooterDescription>"));
 
     }
-
-
-
-
 
 }
