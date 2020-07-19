@@ -23,6 +23,8 @@ class EbInterfaceInvoice {
     public ?EbInterfaceInvoiceLines $lines = null;
     public ?EbInterfaceTaxSummary $taxSummary = null;
 
+    public float $totalGrossAmount = 0.0;
+
     public function __construct() {
         $this->setInvoiceDate();
     }
@@ -157,10 +159,34 @@ class EbInterfaceInvoice {
         $this->taxSummary = new EbInterfaceTaxSummary($this->lines);
         return $this;
     }
+    
+    /**
+     * Will update the toatl sums
+     *
+     * @return EbInterfaceInvoice
+     */
+    public function updateTotal(): EbInterfaceInvoice {
+
+        $totalGrossAmount = 0;
+        
+        $this->updateTax();
+
+        collect($this->lines->lines)->each(function($line) use (&$totalGrossAmount){
+            $totalGrossAmount += $line->getLineAmount();
+        });
+        
+        $this->taxSummary->taxes->each(function($tax) use (&$totalGrossAmount){
+            $totalGrossAmount += $tax->getTax();
+        }); 
+
+        $this->totalGrossAmount = $totalGrossAmount;
+        
+        return $this;
+    }
 
     public function save(): array {
         
-        $this->updateTax();
+        $this->updateTotal();
 
         return [];
 

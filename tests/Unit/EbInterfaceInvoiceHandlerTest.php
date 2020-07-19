@@ -17,6 +17,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
+use Ambersive\Ebinterface\Models\EbInterfaceTax;
 
 use AMBERSIVE\Tests\TestCase;
 
@@ -251,6 +252,59 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
         $this->assertNotNull($this->invoice->lines);
         $this->assertTrue($this->invoice->lines instanceof EbInterfaceInvoiceLines);
+
+    }
+
+    /**
+     * Test if the total gross amount sum will be set
+     */
+    public function testIfInvoiceUpdateTotalWillUpdateTheAmountCorrectly():void {
+
+        // Prepare
+        $this->invoice->setLines(function($invoice, $lines) use (&$called) {
+            
+            $lines->add(null, function($line){
+
+                $line->setQuantity("STK", 100);
+                $line->setTax(new EbInterfaceTax("S", 20, $line->getLineAmount()));
+
+            });
+
+        });
+
+        $this->invoice->updateTotal();
+
+        $this->assertEquals(120, $this->invoice->totalGrossAmount);
+
+    }
+
+    /**
+     * Test if the total gross amount sum will be set even multiple taxes are used
+     */
+    public function testIfInvoiceUpdateTotalWillUpdateTheAmountCorrectlyEvenIfMultipleTaxesAreAdded():void {
+
+        // Prepare
+        $this->invoice->setLines(function($invoice, $lines) use (&$called) {
+            
+            $lines->add(null, function($line){
+
+                $line->setQuantity("STK", 1000);
+                $line->setTax(new EbInterfaceTax("S", 20, $line->getLineAmount()));
+
+            });
+
+            $lines->add(null, function($line){
+
+                $line->setQuantity("STK", 10);
+                $line->setTax(new EbInterfaceTax("S", 10, $line->getLineAmount()));
+
+            });
+
+        });
+
+        $this->invoice->updateTotal();
+
+        $this->assertEquals(1211, $this->invoice->totalGrossAmount);
 
     }
     
