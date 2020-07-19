@@ -114,6 +114,18 @@ class EbInterfaceTaxTest extends TestCase
     }
 
     /**
+     * Test if the addValue will add an amount
+     */
+    public function testIfTaxItemHasMethodToAddAmountToCurrentValue(): void {
+
+        $tax = new EbInterfaceTax();
+        $tax->addValue(1000);
+        $tax->addValue(1000);
+        $this->assertEquals(2000.0, $tax->value);
+
+    }
+
+    /**
      * Test if the toXml method generates a correct xml part
      */
     public function testIfTaxGenerateCorrectOutput(): void {

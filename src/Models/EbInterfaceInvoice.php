@@ -8,6 +8,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
+use Ambersive\Ebinterface\Models\EbInterfaceTaxSummary;
 
 class EbInterfaceInvoice {
 
@@ -20,6 +21,7 @@ class EbInterfaceInvoice {
     public String $header = "";
     public String $footer = "";
     public ?EbInterfaceInvoiceLines $lines = null;
+    public ?EbInterfaceTaxSummary $taxSummary = null;
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -144,16 +146,21 @@ class EbInterfaceInvoice {
         }
         return $this;
     }
-
-    public function addTax(): EbInterfaceInvoice {
-        return $this;
-    }
-
-    public function removeTax(): EbInterfaceInvoice {
+    
+    /**
+     * Will automatically update the tax information from
+     * the given lines
+     *
+     * @return EbInterfaceInvoice
+     */
+    public function updateTax(): EbInterfaceInvoice {
+        $this->taxSummary = new EbInterfaceTaxSummary($this->lines);
         return $this;
     }
 
     public function save(): array {
+        
+        $this->updateTax();
 
         return [];
 

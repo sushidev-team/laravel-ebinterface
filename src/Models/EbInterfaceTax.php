@@ -49,6 +49,17 @@ class EbInterfaceTax extends EbInterfaceBase {
     }
     
     /**
+     * Add amount to the tax value
+     *
+     * @param  mixed $value
+     * @return EbInterfaceTax
+     */
+    public function addValue($value): EbInterfaceTax {
+        $this->value += floatval($value);
+        return $this;
+    }
+    
+    /**
      * Returns the tax
      *
      * @return float
