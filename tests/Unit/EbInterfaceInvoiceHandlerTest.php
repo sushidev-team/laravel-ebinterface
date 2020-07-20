@@ -348,4 +348,20 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     }
 
+    /**
+     * Test if the setPaymentMethod accepts also a callable
+     */
+    public function testIfPaymentMethodAcceptsCallable():void {
+
+        $callable = false;
+
+        $this->invoice->setPaymentMethod(function($paymentMethod) use (&$callable){
+            $callable = true;
+        });
+
+        $this->assertTrue($callable);
+        $this->assertNotNull($this->invoice->paymentMethod);
+
+    }
+
 }   

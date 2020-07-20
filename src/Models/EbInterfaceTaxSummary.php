@@ -25,7 +25,6 @@ class EbInterfaceTaxSummary extends EbInterfaceBase {
         $this->calculate();
     }
     
-    
     /**
      * Export the array to an valid xml for ebInterface
      *

@@ -9,6 +9,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 use Ambersive\Ebinterface\Models\EbInterfaceTaxSummary;
+use Ambersive\Ebinterface\Models\EbInterfacePaymentMethod;
 
 class EbInterfaceInvoice {
 
@@ -22,6 +23,8 @@ class EbInterfaceInvoice {
     public String $footer = "";
     public ?EbInterfaceInvoiceLines $lines = null;
     public ?EbInterfaceTaxSummary $taxSummary = null;
+    public ?EbInterfacePaymentMethod $paymentMethod = null;
+    public String $paymentMethodComment = "";
 
     public float $totalGrossAmount = 0.0;
     public float $totalPayableAmount = 0.0;
@@ -149,8 +152,27 @@ class EbInterfaceInvoice {
         $this->totalPrepaid = $amount;
         return $this;
     }
+    
+    /**
+     * Set the payment method
+     *
+     * @param  mixed $method
+     * @param  mixed $comment
+     * @return EbInterfaceInvoice
+     */
+    public function setPaymentMethod($method, String $comment = ""): EbInterfaceInvoice {
 
-    public function setPaymentMethod(): EbInterfaceInvoice {
+        if (is_callable($method)) {
+            $paymentMethod = new EbInterfacePaymentMethod("UniversalBankTransaction");
+            $paymentMethodCallback = $method($paymentMethod);
+            $this->paymentMethod = $paymentMethodCallback === null ? $paymentMethod : $paymentMethodCallback;
+
+        }
+        else if ($paymentMethod instanceof EbInterfacePaymentMethod) {
+            $this->paymentMethod = $method;
+        }
+
+        $this->paymentMethodComment = $comment;
         return $this;
     }
 
