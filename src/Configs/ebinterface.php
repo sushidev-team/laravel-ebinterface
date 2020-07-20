@@ -26,5 +26,10 @@ return [
         'salutation'        => env('EBINTERFACE_BILLER_SALUTATION', null),
         'salutation_name'   => env('EBINTERFACE_BILLER_SALUTATION_NAME', null),
     ],
+    'payment' => [
+        'iban' => env('EBINTERFANCE_PAYMENT_IBAN',   null),
+        'bic' => env('EBINTERFANCE_PAYMENT_BIC',     null),
+        'owner' => env('EBINTERFANCE_PAYMENT_OWNER', null),
+    ]
 
 ];

@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Spatie\ArrayToXml\ArrayToXml;
 use Ambersive\Ebinterface\Classes\EbInterfaceXml;
 use Ambersive\Ebinterface\Models\EbInterfaceBase;
+use Ambersive\Ebinterface\Models\EbInterfacePaymentMethodBank;
 
 class EbInterfacePaymentMethod extends EbInterfaceBase {
 
@@ -16,6 +17,9 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
     ];
 
     public String $type;
+    public String $comment = "";
+
+    public EbInterfacePaymentMethodBank $account;
 
     public function __construct(String $type) {
         if (in_array($type, $this->allowedTypes) === false) {
@@ -23,6 +27,39 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
                 'type' => ['Unknown payment method type.'],
             ]);
         }
+        $this->type = $type;
+    }
+    
+    /**
+     * Set the payment method comment
+     *
+     * @param  mixed $comment
+     * @return EbInterfacePaymentMethod
+     */
+    public function setComment(String $comment):EbInterfacePaymentMethod {
+        $this->comment = $comment;
+        return $this;
+    }
+    
+    /**
+     * Set the account by passing a PaymentMethod of or by a callable
+     *
+     * @param  mixed $account
+     * @return EbInterfacePaymentMethod
+     */
+    public function setAccount($account):EbInterfacePaymentMethod {
+
+        if ($this->type === "UniversalBankTransaction" && $account instanceof EbInterfacePaymentMethodBank) {
+            $this->account = $account;
+        }
+        else if ($this->type === "UniversalBankTransaction" && is_callable($account)) {
+            $accountDefault = new EbInterfacePaymentMethodBank();
+            $result = $account($accountDefault);
+            $this->account = $result !== null ? $result : $accountDefault;
+        }
+
+        return $this;
+
     }
     
     /**
@@ -32,10 +69,8 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
      */
     public function toXml(?String $container = ""):String {
 
-        $tax = ArrayToXml::convert($this->toArray(), $container === "" ? "TaxItem" : $container);
-        $result = EbInterfaceXml::clean($tax, $container);
-        $result = str_replace("<TaxPercent>", "<TaxPercent TaxCategoryCode='".$this->type."'>", $result);
-
+        $result = ArrayToXml::convert($this->toArray(), $container === "" ? "PaymentMethod" : $container);
+        $result = EbInterfaceXml::clean($result, $container);
         return $result;
     }
     
@@ -45,10 +80,15 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
      * @return array
      */
     public function toArray():array {
-        return [
-            'TaxableAmount' => $this->value,
-            'TaxPercent' => $this->percent
+        $data = [
+            'Comment' => $this->comment,
         ];
+
+        if ($this->type === "UniversalBankTransaction"){
+            $data['UniversalBankTransaction'] = $this->acocunt->toArray();
+        }
+
+        return $data;
     }
 
 

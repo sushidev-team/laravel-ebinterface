@@ -15,6 +15,7 @@ abstract class TestCase extends Orchestra
     {
         return [
             EbinterfaceServiceProvider::class,
+            \Intervention\Validation\Laravel\ValidationServiceProvider::class
         ];
     }
 

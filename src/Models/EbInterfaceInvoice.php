@@ -24,7 +24,6 @@ class EbInterfaceInvoice {
     public ?EbInterfaceInvoiceLines $lines = null;
     public ?EbInterfaceTaxSummary $taxSummary = null;
     public ?EbInterfacePaymentMethod $paymentMethod = null;
-    public String $paymentMethodComment = "";
 
     public float $totalGrossAmount = 0.0;
     public float $totalPayableAmount = 0.0;
@@ -172,7 +171,10 @@ class EbInterfaceInvoice {
             $this->paymentMethod = $method;
         }
 
-        $this->paymentMethodComment = $comment;
+        if ($comment != "") {
+            $this->paymentMethod->setComment($comment);
+        }
+
         return $this;
     }
 

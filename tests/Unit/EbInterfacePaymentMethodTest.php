@@ -7,6 +7,7 @@ use File;
 
 use Ambersive\Ebinterface\Classes\EbInterface;
 use Ambersive\Ebinterface\Models\EbInterfacePaymentMethod;
+use Ambersive\Ebinterface\Models\EbInterfacePaymentMethodBank;
 
 use AMBERSIVE\Tests\TestCase;
 
@@ -18,6 +19,11 @@ class EbInterfacePaymentMethodTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Config::set('ebinterface.payment', [
+            'iban' => 'DE75512108001245126199',
+            'bic' => 'TEST',
+            'owner' => 'AMBERSIVE KG'
+        ]);
     }
 
     protected function tearDown(): void
@@ -41,6 +47,38 @@ class EbInterfacePaymentMethodTest extends TestCase
         
         $this->expectException(\Illuminate\Validation\ValidationException::class);
         $payment = new EbInterfacePaymentMethod("TEST");
+
+    }
+
+    /**
+     * Test if the set account method accepts an callable
+     */
+    public function testIfInvoicePaymentMethodSetMethodAcceptsCallable(): void {
+
+        $payment = new EbInterfacePaymentMethod("UniversalBankTransaction");
+        $callable = false;
+
+        $payment->setAccount(function($account) use (&$callable){
+            $callable = true;
+            $this->assertNotNull($account);
+        });
+
+        $this->asserttrue($callable);
+
+    }
+
+    /**
+     * Test if the set account method also accepts a class
+     */
+    public function testIfInvoicePaymentMethodSetMethodAcceptsClass(): void {
+
+        $payment = new EbInterfacePaymentMethod("UniversalBankTransaction");
+        $bank = new EbInterfacePaymentMethodBank();
+
+        $payment->setAccount($bank);
+
+        $this->assertNotNull($payment->account);
+        $this->assertTrue($payment->account instanceOf EbInterfacePaymentMethodBank);
 
     }
 
