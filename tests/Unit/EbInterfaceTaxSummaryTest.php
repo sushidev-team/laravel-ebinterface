@@ -72,4 +72,26 @@ class EbInterfaceTaxSummaryTest extends TestCase
 
     }
 
+    /**
+     * Test if the xml for the tax summary will be generated correctly
+     */
+    public function testIfTaxSummaryToXmlGenerateCorrectOutput(): void {
+
+        $taxSummary = new EbInterfaceTaxSummary($this->lines);
+        $xml        = $taxSummary->toXml("root");
+
+        $this->assertEquals("<TaxItem><TaxableAmount>2000</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent><TaxAmount>400</TaxAmount></TaxItem><TaxItem><TaxableAmount>1000</TaxableAmount><TaxPercent TaxCategoryCode='S'>10</TaxPercent><TaxAmount>100</TaxAmount></TaxItem>", $xml);
+
+    }
+
+    public function testIfTaxSummaryToXmlWillHaveWrapperAround(): void {
+
+        $taxSummary = new EbInterfaceTaxSummary($this->lines);
+        $xml        = $taxSummary->toXml("Tax");
+        $xml2        = $taxSummary->toXml("root");
+
+        $this->assertNotEquals($xml, $xml2);
+
+    }
+
 }
