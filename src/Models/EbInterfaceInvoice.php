@@ -177,8 +177,16 @@ class EbInterfaceInvoice {
 
         return $this;
     }
-
-    public function setPaymentConditions(): EbInterfaceInvoice {
+    
+    /**
+     * Set the payment conditions for this invoice
+     *
+     * @param  mixed $dueDate
+     * @param  mixed $discounts
+     * @param  mixed $comment
+     * @return EbInterfaceInvoice
+     */
+    public function setPaymentConditions(Carbon $dueDate, array $discounts = [], String $comment = ""): EbInterfaceInvoice {
         return $this;
     }
     

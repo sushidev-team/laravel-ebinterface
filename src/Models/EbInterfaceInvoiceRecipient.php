@@ -40,7 +40,13 @@ class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
             throw ValidationException::withMessages($validator->errors()->toArray());
         }
     }
-
+    
+    /**
+     * Convert the data into a valid xml
+     *
+     * @param  mixed $container
+     * @return String
+     */
     public function toXml(?String $container = null): String {
 
         $data = ArrayToXml::convert($this->toArray(), 'InvoiceRecipient');
