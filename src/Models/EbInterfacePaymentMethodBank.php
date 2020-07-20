@@ -18,10 +18,10 @@ class EbInterfacePaymentMethodBank extends EbInterfaceBase {
     public ?String $owner = "";
 
     public function __construct(?String $iban = null, ?String $bic = null, ?String $owner = null) {
-        
-        $iban == null ? $this->iban = config('ebinterface.payment.iban') : $iban;
-        $bic == null ? $this->bic = config('ebinterface.payment.bic') : $bic;
-        $owner == null ? $this->owner = config('ebinterface.payment.owner') : $owner;
+
+        $this->iban  = $iban == null ?  config('ebinterface.payment.iban') : $iban;
+        $this->bic   = $bic == null ?   config('ebinterface.payment.bic') : $bic;
+        $this->owner = $owner == null ? config('ebinterface.payment.owner') : $owner;
 
         $validator = Validator::make(
             [
@@ -57,8 +57,9 @@ class EbInterfacePaymentMethodBank extends EbInterfaceBase {
      */
     public function toArray():array {
         return [
-            'TaxableAmount' => $this->value,
-            'TaxPercent' => $this->percent
+            'BIC' => $this->bic,
+            'IBAN' => $this->iban,
+            'BankAccountOwner' => $this->owner
         ];
     }
 
