@@ -24,6 +24,8 @@ class EbInterfaceInvoice {
     public ?EbInterfaceTaxSummary $taxSummary = null;
 
     public float $totalGrossAmount = 0.0;
+    public float $totalPayableAmount = 0.0;
+    public float $totalPrepaid = 0.0;
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -113,14 +115,38 @@ class EbInterfaceInvoice {
         $this->recipient = $recipient;
         return $this;
     }
-
+    
+    /**
+     * Set the header of the invoice
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoice
+     */
     public function setHeader(String $text): EbInterfaceInvoice {
         $this->header = $text;
         return $this;
     }
 
+        
+    /**
+     * Set the footer of the invoice
+     *
+     * @param  mixed $text
+     * @return EbInterfaceInvoice
+     */
     public function setFooter(String $text): EbInterfaceInvoice {
         $this->footer = $text;
+        return $this;
+    }
+    
+    /**
+     * Set the amount which was already payed
+     *
+     * @param  mixed $amount
+     * @return EbInterfaceInvoice
+     */
+    public function setPrePaidAmount(float $amount) : EbInterfaceInvoice {
+        $this->totalPrepaid = $amount;
         return $this;
     }
 
@@ -183,10 +209,21 @@ class EbInterfaceInvoice {
         
         return $this;
     }
+    
+    /**
+     * Update the payable amount based on prepaid and updated total
+     *
+     * @return EbInterfaceInvoice
+     */
+    public function updatePayableAmount(): EbInterfaceInvoice {
+        $this->totalPayableAmount = $this->totalGrossAmount - $this->totalPrepaid;
+        return $this;
+    }
 
     public function save(): array {
         
-        $this->updateTotal();
+        $this->updateTotal()
+             ->updatePayableAmount();
 
         return [];
 

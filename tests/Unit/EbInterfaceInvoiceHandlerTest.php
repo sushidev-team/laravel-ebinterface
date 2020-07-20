@@ -307,6 +307,45 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         $this->assertEquals(1211, $this->invoice->totalGrossAmount);
 
     }
+
+    /**
+     * Test if the prepaid amount can be set
+     */
+    public function testIfInvoiceSetPrepaidWillUpdateTheValueCorrectly(): void {
+
+        $this->invoice->setPrePaidAmount(1000);
+
+        $this->assertNotNull($this->invoice->totalPrepaid);
+        $this->assertEquals(1000, $this->invoice->totalPrepaid);
+
+    }
     
+    /**
+     * Test if the prepaid amount has an effect on the total payable amount
+     */
+    public function testIfInvoicePrePaidWillHaveAnEffectOnThePayableAmount(): void {
+
+        $this->invoice->setLines(function($invoice, $lines) use (&$called) {
+            
+            $lines->add(null, function($line){
+
+                $line->setQuantity("STK", 100)
+                     ->setUnitPrice(1)
+                     ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+
+            })->add(null, function($line){
+
+                $line->setQuantity("STK", 10)
+                     ->setUnitPrice(1)
+                     ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+
+            });
+
+        })->setPrePaidAmount(10)->updateTotal()->updatePayableAmount();
+
+        $this->assertNotNull($this->invoice->totalPayableAmount);
+        $this->assertEquals(100, $this->invoice->totalPayableAmount);
+
+    }
 
 }   
