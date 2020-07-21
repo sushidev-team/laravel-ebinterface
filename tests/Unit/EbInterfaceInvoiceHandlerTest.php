@@ -364,4 +364,24 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     }
 
+    /**
+     * Test if a calling of the setPaymentConditions with no params will work
+     */
+    public function testIfPaymentConditionsRequiresNoDueDate():void {
+
+        $this->invoice->setPaymentConditions();
+        $this->assertNull($this->invoice->paymentDueDate);
+
+    }
+
+    /**
+     * Test if payment due date can be null
+     */
+    public function testIfPaymentConditionsAcceptsANullForDueDate(): void {
+
+        $this->invoice->setPaymentConditions(null);
+        $this->assertNull($this->invoice->paymentDueDate);
+
+    }
+
 }   

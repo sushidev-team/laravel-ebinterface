@@ -2,6 +2,8 @@
 
 namespace Ambersive\Ebinterface\Models;
 
+use Validator;
+
 use Carbon\Carbon;
 
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
@@ -28,6 +30,10 @@ class EbInterfaceInvoice {
     public float $totalGrossAmount = 0.0;
     public float $totalPayableAmount = 0.0;
     public float $totalPrepaid = 0.0;
+
+    public ?Carbon $paymentDueDate = null;
+    public array $paymentDiscounts = [];
+    public String $paymentComment = "";
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -186,7 +192,21 @@ class EbInterfaceInvoice {
      * @param  mixed $comment
      * @return EbInterfaceInvoice
      */
-    public function setPaymentConditions(Carbon $dueDate, array $discounts = [], String $comment = ""): EbInterfaceInvoice {
+    public function setPaymentConditions(Carbon $dueDate = null, array $discounts = [], String $comment = ""): EbInterfaceInvoice {
+        
+        $validator = Validator::make([
+            'dueDate' => $dueDate,
+            'discounts' => $discounts,
+            'comment' => $comment
+        ], [
+            'discounts' => 'max:2',
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
+        $this->paymentComment = $comment;
         return $this;
     }
     
