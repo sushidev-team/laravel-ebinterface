@@ -41,6 +41,10 @@ class EbInterfaceInvoice {
     public String $paymentComment = "";
 
     public String $comment = "";
+    public String $currency = "Eur";
+
+    public String $documentTitle = "";
+    public String $documentLanguage = "ger";
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -65,6 +69,39 @@ class EbInterfaceInvoice {
      */
     public function setInvoiceDate(Carbon $date = null): EbInterfaceInvoice {
         $this->invoiceDate = ($date === null ? Carbon::now() : $date);
+        return $this;
+    }
+    
+    /**
+     * Set the currency for this invoce
+     *
+     * @param  mixed $currency
+     * @return EbInterfaceInvoice
+     */
+    public function setInvoiceCurrency(String $currency): EbInterfaceInvoice {
+        $this->currency = $currency;
+        return $this;
+    }
+    
+    /**
+     * Set the title for this document
+     *
+     * @param  mixed $name
+     * @return EbInterfaceInvoice
+     */
+    public function setDocumentTitle(String $name): EbInterfaceInvoice {
+        $this->documentTitle = $name;
+        return $this;
+    }
+    
+    /**
+     * Define which language this invoice is
+     *
+     * @param  mixed $language
+     * @return EbInterfaceInvoice
+     */
+    public function setLanguage(String $language): EbInterfaceInvoice {
+        $this->documentLanguage = $language;
         return $this;
     }
     
@@ -355,10 +392,13 @@ class EbInterfaceInvoice {
         if ($container === "Invoice") {
 
             $schema = config('ebinterface.schema', "http://www.ebinterface.at/schema/5p0/");
-
+            $generator = config('ebinterface.generator');
+            $currency = $this->currency;
+            $name = $this->documentTitle !== null && $this->documentTitle !== "" ? $this->documentTitle : $this->invoiceNr;
+            $lang = $this->documentLanguage !== null && $this->documentLanguage !== "" ? $this->documentLanguage : "ger";
             // TODO: Create the missing parameter for the root container
 
-            $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"\" DocumentType=\"Invoice\" InvoiceCurrency=\"\" DocumentTitle=\"\" Language=\"\" ManualProcessing=\"\" IsDuplicate=\"\">", $xml);
+            $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"${generator}\" DocumentType=\"Invoice\" InvoiceCurrency=\"${currency}\" DocumentTitle=\"${name}\" Language=\"${lang}\" ManualProcessing=\"\" IsDuplicate=\"\">", $xml);
 
         }
 

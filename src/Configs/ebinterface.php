@@ -14,6 +14,8 @@ return [
         'production' => "",
         'testing'    => "https://test.erechnung.gv.at/files/ws/erb-in-test-order-102.wsdl"
     ],
+    'schema' => env('EBINTERFACE_SCHEMA', "http://www.ebinterface.at/schema/5p0/"),
+    'generator' => env('EBINTERFACE_GENERATOR', "AMBERSIVE KG - Invoice Creator"),
     'biller' => [
         'vatId'             => env('EBINTERFACE_BILLER_VATID', null),
         'billerId'          => env('EBINTERFACE_BILLER_ID', null),
