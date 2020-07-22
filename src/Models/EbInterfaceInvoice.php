@@ -35,6 +35,8 @@ class EbInterfaceInvoice {
     public array $paymentDiscounts = [];
     public String $paymentComment = "";
 
+    public String $comment = "";
+
     public function __construct() {
         $this->setInvoiceDate();
     }
@@ -206,6 +208,7 @@ class EbInterfaceInvoice {
             throw ValidationException::withMessages($validator->errors()->toArray());
         }
 
+        $this->paymentDiscounts = $discounts;
         $this->paymentComment = $comment;
         return $this;
     }
@@ -224,6 +227,17 @@ class EbInterfaceInvoice {
         else if ($value instanceof EbInterfaceInvoiceLines) {
             $this->lines = $value;
         }
+        return $this;
+    }
+    
+    /**
+     * Set the comment for this invoice
+     *
+     * @param  mixed $comment
+     * @return EbInterfaceInvoice
+     */
+    public function setComment(String $comment): EbInterfaceInvoice {
+        $this->comment = $comment;
         return $this;
     }
     

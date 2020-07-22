@@ -14,6 +14,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
+use Ambersive\Ebinterface\Models\EbInterfaceDiscount;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
@@ -381,6 +382,40 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
         $this->invoice->setPaymentConditions(null);
         $this->assertNull($this->invoice->paymentDueDate);
+
+    }
+
+    /**
+     * Test if the payment discount can be set
+     */
+    public function testIfPaymentConditionsAcceptsDiscounts(): void {
+        
+        $this->invoice->setPaymentConditions(null, []);
+        $this->assertNull($this->invoice->paymentDueDate);
+
+        $this->assertNotNull($this->invoice->paymentDiscounts);
+        $this->assertEquals([], $this->invoice->paymentDiscounts);
+
+    }
+
+    /**
+     * Test if the discount will be stored
+     */
+    public function testIfPaymentConditionsAcceptsDiscountsAndStoreTheValues(): void {
+        
+        $this->invoice->setPaymentConditions(null, [new EbInterfaceDiscount(now(), 10)]);
+        $this->assertNull($this->invoice->paymentDueDate);
+
+        $this->assertNotNull($this->invoice->paymentDiscounts);
+        $this->assertEquals(1, sizeOf($this->invoice->paymentDiscounts));
+
+    }
+
+    public function testIfInvoiceSetCommentStoreTheComment():void {
+
+        $this->invoice->setComment("ASDF");
+        $this->assertNotNull($this->invoice->comment);
+        $this->assertEquals("ASDF", $this->invoice->comment);
 
     }
 
