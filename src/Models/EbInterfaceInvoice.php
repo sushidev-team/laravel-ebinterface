@@ -6,12 +6,17 @@ use Validator;
 
 use Carbon\Carbon;
 
+use Spatie\ArrayToXml\ArrayToXml;
+use Ambersive\Ebinterface\Classes\EbInterfaceXml;
+
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceBiller;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceDelivery;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 use Ambersive\Ebinterface\Models\EbInterfaceTaxSummary;
 use Ambersive\Ebinterface\Models\EbInterfacePaymentMethod;
+
+use Illuminate\Validation\ValidationException;
 
 class EbInterfaceInvoice {
 
@@ -39,15 +44,6 @@ class EbInterfaceInvoice {
 
     public function __construct() {
         $this->setInvoiceDate();
-    }
-        
-    /**
-     * Returns the invoice data as array
-     *
-     * @return array
-     */
-    public function toArray():array {
-       return json_decode(json_encode($this),true);
     }
 
     /**
@@ -248,7 +244,9 @@ class EbInterfaceInvoice {
      * @return EbInterfaceInvoice
      */
     public function updateTax(): EbInterfaceInvoice {
-        $this->taxSummary = new EbInterfaceTaxSummary($this->lines);
+        if (isset($this->lines) && $this->lines !== null){
+            $this->taxSummary = new EbInterfaceTaxSummary($this->lines);
+        }
         return $this;
     }
     
@@ -263,13 +261,17 @@ class EbInterfaceInvoice {
         
         $this->updateTax();
 
-        collect($this->lines->lines)->each(function($line) use (&$totalGrossAmount){
-            $totalGrossAmount += $line->getLineAmount();
-        });
-        
-        $this->taxSummary->taxes->each(function($tax) use (&$totalGrossAmount){
-            $totalGrossAmount += $tax->getTax();
-        }); 
+        if (isset($this->lines) && $this->lines !== null) {
+
+            collect($this->lines->lines)->each(function($line) use (&$totalGrossAmount){
+                $totalGrossAmount += $line->getLineAmount();
+            });
+            
+            $this->taxSummary->taxes->each(function($tax) use (&$totalGrossAmount){
+                $totalGrossAmount += $tax->getTax();
+            }); 
+
+        }
 
         $this->totalGrossAmount = $totalGrossAmount;
         
@@ -286,12 +288,81 @@ class EbInterfaceInvoice {
         return $this;
     }
 
-    public function save(): array {
-        
+    /**
+     * Returns the invoice data as array
+     *
+     * @return array
+     */
+    public function toArray():array {
+
         $this->updateTotal()
              ->updatePayableAmount();
 
-        return [];
+        $data = [
+            'InvoiceNumber' => $this->invoiceNr,
+            'InvoiceDate'   => $this->invoiceDate->format('Y-m-d'),
+        ];
+
+        $this->biller !== null ? $data['Biller'] = $this->biller->toXml("root") : null;
+        $this->delivery !== null ? $data['Delivery'] = $this->delivery->toXml("root") : null;
+        $this->recipient !== null ? $data['InvoiceRecipient'] = $this->recipient->toXml("root") : null;
+        $this->lines !== null ? $data['Detail'] = $this->lines->toXml("root") : null;
+        $this->taxSummary !== null ? $data['Tax'] = $this->taxSummary->toXml("root") : null;
+//
+        $data['TotalGrossAmount'] = $this->totalGrossAmount;
+        $data['PayableAmount'] = $this->totalGrossAmount;
+
+        $this->paymentMethod !== null ? $data['PaymentMethod'] = $this->paymentMethod->toXml() : null;
+    
+        // Payment conditions
+        $conditions = "";
+
+        if ($this->paymentDueDate !== null) {
+            $conditions .= "<DueDate>".$this->paymentDueDate->format("Y-m-d")."</DueDate>";
+        }
+
+        if (isset($this->paymentDiscounts) && $this->paymentDiscounts !== null) {
+
+            foreach($this->paymentDiscounts as $index => $discount) {
+                $conditions .= $discount->toXml();
+            }
+
+        }  
+
+        $data['PaymentConditions'] = $conditions;
+        $data['Comment'] = $this->comment;
+
+        return $data;
+     }
+
+        
+    /**
+     * Generate the XML for the invoice
+     *
+     * @param  mixed $container
+     * @return String
+     */
+    public function toXml(String $container = ""): String {
+
+        $data = $this->toArray();
+        $xml = ArrayToXml::convert($data, $container === "" ? "Invoice" : $container);
+
+        $xml =  EbInterfaceXml::clean($xml, $container);
+
+        // Make changes to the the container
+        $container === "" ? $container = "Invoice" : null;
+       
+        if ($container === "Invoice") {
+
+            $schema = config('ebinterface.schema', "http://www.ebinterface.at/schema/5p0/");
+
+            // TODO: Create the missing parameter for the root container
+
+            $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"\" DocumentType=\"Invoice\" InvoiceCurrency=\"\" DocumentTitle=\"\" Language=\"\" ManualProcessing=\"\" IsDuplicate=\"\">", $xml);
+
+        }
+
+        return $xml;
 
     }
 

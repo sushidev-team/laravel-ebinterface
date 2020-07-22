@@ -44,7 +44,7 @@ class EbInterfaceInvoiceDelivery extends EbInterfaceBase{
             unset($data['Contact']);
         }
 
-        $delivery = ArrayToXml::convert($data, 'Delivery');
+        $delivery = ArrayToXml::convert($data, $container === "" ? "Delivery" : $container);
 
         return EbInterfaceXml::clean($delivery, $container);
 

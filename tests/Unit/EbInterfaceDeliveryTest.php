@@ -44,7 +44,9 @@ class EbInterfaceDeliveryTest extends TestCase
 
     }
 
-    /** */
+    /**
+     * Test if the delivery block accepts a null as contact block
+     */
     public function testIfEbInterfaceDeliveryWillAcceptANullContactInformation():void {
 
 
@@ -56,6 +58,15 @@ class EbInterfaceDeliveryTest extends TestCase
         $this->assertNotFalse(strpos($xml, "<Date>".Carbon::now()->format('Y-m-d')."</Date>"));
         $this->assertFalse(strpos($xml, "&lt;"));
         $this->assertFalse(strpos($xml, "<Salutation>Mr</Salutation>"));
+
+    }
+
+    public function testIfEbInterfaceDeliveryWillNotHaveADeliveryWrapper(): void {
+
+        $delivery = new EbInterfaceInvoiceDelivery(Carbon::now(), $this->address);
+        $xml = $delivery->toXml("root");
+
+        $this->assertFalse(strpos($xml, "<Delivery>"));
 
     }
 

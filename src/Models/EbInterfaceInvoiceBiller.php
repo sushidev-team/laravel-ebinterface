@@ -74,7 +74,7 @@ class EbInterfaceInvoiceBiller extends EbInterfaceBase {
             unset($data['Contact']);
         }
 
-        $biller = ArrayToXml::convert($data, 'Biller');
+        $biller = ArrayToXml::convert($data, $container === "" ? "Biller" : $container);
 
         return EbInterfaceXml::clean($biller, $container);
 

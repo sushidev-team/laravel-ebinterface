@@ -47,13 +47,10 @@ class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
      * @param  mixed $container
      * @return String
      */
-    public function toXml(?String $container = null): String {
-
-        $data = ArrayToXml::convert($this->toArray(), 'InvoiceRecipient');
+    public function toXml(?String $container = ""): String {
+        $data = ArrayToXml::convert($this->toArray(), $container === "" ? "InvoiceRecipient" : $container);
         $xml = EbInterfaceXml::clean($data, $container);
-
         return preg_replace('/<[\/]?Legal\>|\\n/','', $xml);
-
     }
 
     /**

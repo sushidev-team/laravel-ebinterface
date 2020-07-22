@@ -410,12 +410,90 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         $this->assertEquals(1, sizeOf($this->invoice->paymentDiscounts));
 
     }
+    
+    /**
+     * Test if the only max 2 discounts where set
+     */
+    public function testIfPaymentConditionsAcceptsOnly2Discounts(): void {
 
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        
+        $this->invoice->setPaymentConditions(null, [
+            new EbInterfaceDiscount(now(), 10),
+            new EbInterfaceDiscount(now(), 10),
+            new EbInterfaceDiscount(now(), 10)
+        ]);
+
+    }
+
+    /**
+     * Test if the invoice comment can be set
+     */
     public function testIfInvoiceSetCommentStoreTheComment():void {
 
         $this->invoice->setComment("ASDF");
         $this->assertNotNull($this->invoice->comment);
         $this->assertEquals("ASDF", $this->invoice->comment);
+
+    }
+
+    /**
+     * Test if the xml can be generated for the invoice
+     */
+    public function testIfInvoiceToXmlReturnsAValidXml():void {
+
+        $this->invoice
+                ->setDelivery(function($invoice) {
+                    return new EbInterfaceInvoiceDelivery(
+                        Carbon::now(),
+                        $this->address->setEmail("office@ambersive.com"),
+                        $this->contact
+                    );
+                })
+                ->setBiller(function($invoice) {
+                    return new EbInterfaceInvoiceBiller(
+                        $this->address,
+                        $this->contact
+                    );
+                })
+                ->setRecipient(function($invoice){
+                    return new EbInterfaceInvoiceRecipient(
+                        $this->legal,
+                        $this->address,
+                        $this->contact
+                    );
+                })
+                ->setLines(function($invoice, $lines) use (&$called) {
+            
+                    $lines->add(null, function($line){
+        
+                        $line->setQuantity("STK", 100)
+                             ->setUnitPrice(1)
+                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+        
+                    })->add(null, function($line){
+        
+                        $line->setQuantity("STK", 10)
+                             ->setUnitPrice(1)
+                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+        
+                    });
+        
+                })
+                ->setPaymentMethod(function($paymentMethod){
+                   
+                })
+                ->setPaymentConditions(null, [
+                    new EbInterfaceDiscount(now(), 1),
+                    new EbInterfaceDiscount(now(), 2),
+                ]);
+        ;
+
+        // Create xml
+        $xml = $this->invoice->toXml();
+
+        $this->assertNotNull($xml);
+        $this->assertNotEquals("", $xml);
 
     }
 

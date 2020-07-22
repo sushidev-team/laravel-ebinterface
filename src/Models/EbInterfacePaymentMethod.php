@@ -84,7 +84,7 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
             'Comment' => $this->comment,
         ];
 
-        if ($this->type === "UniversalBankTransaction"){
+        if ($this->type === "UniversalBankTransaction" && isset($this->account) && $this->account !== null){
             $data['UniversalBankTransaction'] = [
                 'BeneficiaryAccount' => $this->account->toArray()
             ];
