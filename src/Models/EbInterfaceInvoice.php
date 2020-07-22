@@ -45,6 +45,8 @@ class EbInterfaceInvoice {
 
     public String $documentTitle = "";
     public String $documentLanguage = "ger";
+    public bool $documentCheck = false;
+    public bool $documentDuplicate = false;
 
     public function __construct() {
         $this->setInvoiceDate();
@@ -104,7 +106,18 @@ class EbInterfaceInvoice {
         $this->documentLanguage = $language;
         return $this;
     }
-    
+        
+    /**
+     * Define if this invoice should be check by the recipient
+     *
+     * @param  mixed $check
+     * @return EbInterfaceInvoice
+     */
+    public function shouldBeChecked(bool $check): EbInterfaceInvoice {
+        $this->documentCheck = $check;
+        return $this;
+    }
+
     /**
      * Set the billing block
      * Parameter can be a callable or an instance of EbInterfaceInvoiceBiller
@@ -396,9 +409,11 @@ class EbInterfaceInvoice {
             $currency = $this->currency;
             $name = $this->documentTitle !== null && $this->documentTitle !== "" ? $this->documentTitle : $this->invoiceNr;
             $lang = $this->documentLanguage !== null && $this->documentLanguage !== "" ? $this->documentLanguage : "ger";
+            $check = $this->documentCheck ? 'true' : 'false';
+            $isDuplicate = $this->documentDuplicate ? 'true' : 'false';
             // TODO: Create the missing parameter for the root container
 
-            $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"${generator}\" DocumentType=\"Invoice\" InvoiceCurrency=\"${currency}\" DocumentTitle=\"${name}\" Language=\"${lang}\" ManualProcessing=\"\" IsDuplicate=\"\">", $xml);
+            $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"${generator}\" DocumentType=\"Invoice\" InvoiceCurrency=\"${currency}\" DocumentTitle=\"${name}\" Language=\"${lang}\" ManualProcessing=\"${check}\" IsDuplicate=\"${isDuplicate}\">", $xml);
 
         }
 
