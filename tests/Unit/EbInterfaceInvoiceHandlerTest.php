@@ -420,11 +420,55 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         
         $this->invoice->setPaymentConditions(null, [
             new EbInterfaceDiscount(now(), 10),
-            new EbInterfaceDiscount(now(), 10),
-            new EbInterfaceDiscount(now(), 10)
+            new EbInterfaceDiscount(now()->addDay(1), 11),
+            new EbInterfaceDiscount(now()->addDay(2), 12)
         ]);
 
     }
+
+    /**
+     * Test if the discount checks for duplicate date entries
+     */
+    public function testIfPaymentConditionsChecksForDuplicateDates(): void {
+
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        
+        $this->invoice->setPaymentConditions(null, [
+            new EbInterfaceDiscount(now(), 10),
+            new EbInterfaceDiscount(now(), 11)
+        ]);
+
+    }
+
+    /**
+     * Test if a higher discount rate for the later discount is invalid
+     */
+    public function testIfPaymentConditionsChecksForInvalidDiscountRates(): void {
+
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        
+        $this->invoice->setPaymentConditions(null, [
+            new EbInterfaceDiscount(now(), 10),
+            new EbInterfaceDiscount(now()->addDay(1), 11)
+        ]);
+
+    }
+
+    /**
+     * Test if a higher discount rate for the later discount is invalid
+     */
+    public function testIfPaymentConditionsAreValidIfDiscountsRatesDecreaseOverTime(): void {
+        
+        $this->invoice->setPaymentConditions(null, [
+            new EbInterfaceDiscount(now(), 10),
+            new EbInterfaceDiscount(now()->addDay(1), 8)
+        ]);
+
+        $this->assertNotNull($this->invoice->paymentDiscounts);
+        $this->assertEquals(2, sizeOf($this->invoice->paymentDiscounts));
+
+    }
+
 
     /**
      * Test if the invoice comment can be set
@@ -484,7 +528,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
                    
                 })
                 ->setPaymentConditions(null, [
-                    new EbInterfaceDiscount(now(), 1),
+                    new EbInterfaceDiscount(now()->addDays(2), 1),
                     new EbInterfaceDiscount(now(), 2),
                 ]);
         ;

@@ -267,7 +267,38 @@ class EbInterfaceInvoice {
             throw ValidationException::withMessages($validator->errors()->toArray());
         }
 
-        $this->paymentDiscounts = $discounts;
+        $discountCollection = collect($discounts)->sortBy('date');
+
+        // Test if there are duplicate discount entries
+        $dates = $discountCollection->map(function($date){
+            return $date->date->format('Y-m-d');
+        })->toArray();
+
+        if ($discountCollection->count() != sizeOf(array_unique($dates))) {
+
+            throw ValidationException::withMessages([
+                'discount_date' => ['Duplicate discount date detected.'],
+            ]);
+
+        }
+
+        // Test if the discount rates decrease
+        $rates = $discountCollection->map(function($date){
+            return $date->percent;
+        })->toArray();
+
+        $latestRate = 100;
+
+        foreach($rates as $rateIndex => $rate) {
+            if ($rate > $latestRate) {
+                throw ValidationException::withMessages([
+                    'discount_rate' => ['Invalid discount rate. Be sure that the discount rates decrease over time.'],
+                ]);
+            }
+            $latestRate = $rate;
+        }
+
+        $this->paymentDiscounts = $discountCollection->toArray();
         $this->paymentComment = $comment;
         return $this;
     }
