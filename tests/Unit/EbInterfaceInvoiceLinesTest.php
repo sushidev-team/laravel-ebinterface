@@ -102,9 +102,9 @@ class EbInterfaceInvoiceLinesTest extends TestCase
     }
 
     /**
-     * Test if the lines method will create the correct xml for the detail
+     * Test if invalid lines will be filtered
      */
-    public function testIfInvoiceToXmlWillCreateValidXML(): void {
+    public function testIfInvalidLinesWillBeFiltered(): void {
 
         $this->lines->add(new EbInterfaceInvoiceLine());
         $this->lines->add(new EbInterfaceInvoiceLine());
@@ -116,7 +116,7 @@ class EbInterfaceInvoiceLinesTest extends TestCase
         $this->assertFalse(strpos($xml, "<HeaderDescription></HeaderDescription>"));
         $this->assertFalse(strpos($xml, "<FooterDescription></FooterDescription>"));
 
-        $this->assertEquals("<ItemList><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem><ItemListItem><Description></Description><Quantity>0</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>0</LineItemAmount></ItemListItem></ItemList>", $xml);
+        $this->assertEquals("<ItemList></ItemList>", $xml);
 
     }
 

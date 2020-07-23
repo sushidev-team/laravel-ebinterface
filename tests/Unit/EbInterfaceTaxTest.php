@@ -133,7 +133,7 @@ class EbInterfaceTaxTest extends TestCase
         $tax = new EbInterfaceTax();
 
         $xml = $tax->toXml();
-        $this->assertEquals("<TaxItem><TaxableAmount>0</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent></TaxItem>", $xml);
+        $this->assertEquals("<TaxItem><TaxableAmount>0.00</TaxableAmount><TaxPercent TaxCategoryCode='S'>20.00</TaxPercent></TaxItem>", $xml);
 
     }
 
@@ -145,7 +145,7 @@ class EbInterfaceTaxTest extends TestCase
         $tax = new EbInterfaceTax();
 
         $xml = $tax->toXml("root");
-        $this->assertEquals("<TaxableAmount>0</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent>", $xml);
+        $this->assertEquals("<TaxableAmount>0.00</TaxableAmount><TaxPercent TaxCategoryCode='S'>20.00</TaxPercent>", $xml);
 
 
     }

@@ -37,11 +37,12 @@ class EbInterfaceInvoice {
     public float $totalPrepaid = 0.0;
 
     public ?Carbon $paymentDueDate = null;
+    public int $paymentDueDays = 0;
     public array $paymentDiscounts = [];
     public String $paymentComment = "";
 
     public String $comment = "";
-    public String $currency = "Eur";
+    public String $currency = "EUR"; // Tdo make it setable
 
     public String $documentTitle = "";
     public String $documentLanguage = "ger";
@@ -50,6 +51,7 @@ class EbInterfaceInvoice {
 
     public function __construct() {
         $this->setInvoiceDate();
+        $this->paymentDueDays = config('ebinterface.days', 14);
     }
 
     /**
@@ -115,6 +117,17 @@ class EbInterfaceInvoice {
      */
     public function shouldBeChecked(bool $check): EbInterfaceInvoice {
         $this->documentCheck = $check;
+        return $this;
+    }
+    
+    /**
+     * Define how many days after the creation the invoice must be payed
+     *
+     * @param  mixed $days
+     * @return EbInterfaceInvoice
+     */
+    public function setPaymentDueDays(int $days): EbInterfaceInvoice {
+        $this->paymentDueDays = $days;
         return $this;
     }
 
@@ -353,19 +366,23 @@ class EbInterfaceInvoice {
             'InvoiceDate'   => $this->invoiceDate->format('Y-m-d'),
         ];
 
-        $this->biller !== null ? $data['Biller'] = $this->biller->toXml("root") : null;
         $this->delivery !== null ? $data['Delivery'] = $this->delivery->toXml("root") : null;
+        $this->biller !== null ? $data['Biller'] = $this->biller->toXml("root") : null;
         $this->recipient !== null ? $data['InvoiceRecipient'] = $this->recipient->toXml("root") : null;
-        $this->lines !== null ? $data['Detail'] = $this->lines->toXml("root") : null;
+        $this->lines !== null ? $data['Details'] = $this->lines->toXml() : null;
         $this->taxSummary !== null ? $data['Tax'] = $this->taxSummary->toXml("root") : null;
 //
         $data['TotalGrossAmount'] = $this->totalGrossAmount;
         $data['PayableAmount'] = $this->totalGrossAmount;
 
-        $this->paymentMethod !== null ? $data['PaymentMethod'] = $this->paymentMethod->toXml() : null;
+        $this->paymentMethod !== null ? $data['PaymentMethod'] = $this->paymentMethod->toXml("root") : null;
     
         // Payment conditions
         $conditions = "";
+
+        if ($this->paymentDueDate === null) {
+            $this->paymentDueDate = now()->addDays($this->paymentDueDays);
+        }
 
         if ($this->paymentDueDate !== null) {
             $conditions .= "<DueDate>".$this->paymentDueDate->format("Y-m-d")."</DueDate>";
@@ -416,6 +433,9 @@ class EbInterfaceInvoice {
             $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"${generator}\" DocumentType=\"Invoice\" InvoiceCurrency=\"${currency}\" DocumentTitle=\"${name}\" Language=\"${lang}\" ManualProcessing=\"${check}\" IsDuplicate=\"${isDuplicate}\">", $xml);
 
         }
+
+        $xml = "<?xml version='1.0' encoding='utf-8'?>${xml}";
+
 
         return $xml;
 

@@ -80,7 +80,7 @@ class EbInterfaceTaxSummaryTest extends TestCase
         $taxSummary = new EbInterfaceTaxSummary($this->lines);
         $xml        = $taxSummary->toXml("root");
 
-        $this->assertEquals("<TaxItem><TaxableAmount>2000</TaxableAmount><TaxPercent TaxCategoryCode='S'>20</TaxPercent><TaxAmount>400</TaxAmount></TaxItem><TaxItem><TaxableAmount>1000</TaxableAmount><TaxPercent TaxCategoryCode='S'>10</TaxPercent><TaxAmount>100</TaxAmount></TaxItem>", $xml);
+        $this->assertEquals("<TaxItem><TaxableAmount>2,000.00</TaxableAmount><TaxPercent TaxCategoryCode='S'>20.00</TaxPercent><TaxAmount>400</TaxAmount></TaxItem><TaxItem><TaxableAmount>1,000.00</TaxableAmount><TaxPercent TaxCategoryCode='S'>10.00</TaxPercent><TaxAmount>100</TaxAmount></TaxItem>", $xml);
 
     }
 

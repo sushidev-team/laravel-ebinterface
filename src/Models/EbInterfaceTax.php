@@ -89,8 +89,8 @@ class EbInterfaceTax extends EbInterfaceBase {
      */
     public function toArray():array {
         return [
-            'TaxableAmount' => $this->value,
-            'TaxPercent' => $this->percent
+            'TaxableAmount' => number_format($this->value, 2),
+            'TaxPercent' => number_format($this->percent, 2)
         ];
     }
 

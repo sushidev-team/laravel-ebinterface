@@ -16,7 +16,7 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
         "UniversalBankTransaction"
     ];
 
-    public String $type;
+    public String $type = "NoPayment";
     public String $comment = "";
 
     public EbInterfacePaymentMethodBank $account;
@@ -71,6 +71,7 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
 
         $result = ArrayToXml::convert($this->toArray(), $container === "" ? "PaymentMethod" : $container);
         $result = EbInterfaceXml::clean($result, $container);
+        
         return $result;
     }
     
@@ -88,6 +89,9 @@ class EbInterfacePaymentMethod extends EbInterfaceBase {
             $data['UniversalBankTransaction'] = [
                 'BeneficiaryAccount' => $this->account->toArray()
             ];
+        }
+        else {
+            $data['NoPayment'] = "";
         }
 
         return $data;

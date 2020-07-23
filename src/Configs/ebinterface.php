@@ -16,6 +16,7 @@ return [
     ],
     'schema' => env('EBINTERFACE_SCHEMA', "http://www.ebinterface.at/schema/5p0/"),
     'generator' => env('EBINTERFACE_GENERATOR', "AMBERSIVE KG - Invoice Creator"),
+    'day'    => env('EBINTERFCE_DAYS', 14),
     'biller' => [
         'vatId'             => env('EBINTERFACE_BILLER_VATID', null),
         'billerId'          => env('EBINTERFACE_BILLER_ID', null),

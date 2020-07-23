@@ -133,15 +133,16 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
         $data = [
             'Description' => $this->description,
             'Quantity' => $this->quantity,
-            'UnitPrice' => $this->unitPrice,
-            "LineItemAmount" => $this->getLineAmount()
+            'UnitPrice' => $this->unitPrice
         ];
 
         if ($this->tax !== null) {
 
-            $data['TaxItem'] = $this->tax->toXml();
+            $data['TaxItem'] = $this->tax->toXml("root");
 
         }
+
+        $data["LineItemAmount"] = number_format($this->getLineAmount(), 2);
 
         if ($this->orderID != null) {
             $data['InvoiceRecipientsOrderReference'] = [
@@ -156,9 +157,14 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
 
     public function toXml(?String $container = ""): String {
 
-        $tax = ArrayToXml::convert($this->toArray(), $container === "" ? "ListLineItem" : $container);
-        $result = EbInterfaceXml::clean($tax, $container);
+        $result = ArrayToXml::convert($this->toArray(), $container === "" ? "ListLineItem" : $container);
+        $result = EbInterfaceXml::clean($result, $container);
 
+        if ($this->quantityType === "" || $this->quantityType === null) {
+            return "";
+        }
+        $quantityType = $this->quantityType;
+        $result = str_replace("<Quantity>", "<Quantity Unit=\"${quantityType}\">", $result);
         return $result;
 
         
