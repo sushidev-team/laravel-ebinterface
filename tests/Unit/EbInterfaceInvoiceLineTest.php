@@ -161,7 +161,7 @@ class EbInterfaceInvoiceLineTest extends TestCase
     public function testIfInvoiceLineToXmlCreatesAValidString(): void {
 
         $xml = $this->line->setQuantity('STK', 1)->toXml();
-        $this->assertEquals("<ListLineItem><Description></Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount></ListLineItem>", $xml);
+        $this->assertEquals("<ListLineItem><Description>n/a</Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount></ListLineItem>", $xml);
 
     }
 
@@ -171,7 +171,7 @@ class EbInterfaceInvoiceLineTest extends TestCase
     public function testIfInvoiceLineToXmlPassingRootWillCreateXmlWithoutContainer(): void {
 
         $xml = $this->line->setQuantity('STK', 1)->toXml("root");
-        $this->assertEquals("<Description></Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount>", $xml);
+        $this->assertEquals("<Description>n/a</Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount>", $xml);
 
     }
 
@@ -183,7 +183,7 @@ class EbInterfaceInvoiceLineTest extends TestCase
         $this->line->setOrderReference("XXX");
 
         $xml = $this->line->setQuantity('STK', 1)->toXml("root");
-        $this->assertEquals("<Description></Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount><InvoiceRecipientsOrderReference><OrderID>XXX</OrderID><OrderPositionNumber>0</OrderPositionNumber></InvoiceRecipientsOrderReference>", $xml);
+        $this->assertEquals("<Description>n/a</Description><Quantity Unit=\"STK\">1</Quantity><UnitPrice>1</UnitPrice><LineItemAmount>1.00</LineItemAmount><InvoiceRecipientsOrderReference><OrderID>XXX</OrderID><OrderPositionNumber>0</OrderPositionNumber></InvoiceRecipientsOrderReference>", $xml);
 
     }
 

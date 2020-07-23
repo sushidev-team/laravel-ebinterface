@@ -15,6 +15,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 use Ambersive\Ebinterface\Models\EbInterfaceTaxSummary;
 use Ambersive\Ebinterface\Models\EbInterfacePaymentMethod;
+use Ambersive\EbInterface\Models\EbInterfacePaymentMethodBank;
 
 use Illuminate\Validation\ValidationException;
 

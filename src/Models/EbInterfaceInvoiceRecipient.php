@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Ambersive\EbInterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\EbInterface\Models\EbInterfaceAddress;
 use Ambersive\EbInterface\Models\EbInterfaceContact;
+use Ambersive\EbInterface\Models\EbInterfaceOrderReference;
 
 use Ambersive\Ebinterface\Models\EbInterfaceBase;
 
@@ -22,11 +23,13 @@ class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
     public EbInterfaceCompanyLegal $companyLegal;
     public EbInterfaceAddress $address;
     public ?EbInterfaceContact $contact;
+    public EbInterfaceOrderReference $reference;
 
-    public function __construct(EbInterfaceCompanyLegal $companyLegal, EbInterfaceAddress $address, ?EbInterfaceContact $contact = null) {
+    public function __construct(EbInterfaceCompanyLegal $companyLegal, EbInterfaceAddress $address, EbInterfaceOrderReference $reference,  ?EbInterfaceContact $contact = null) {
         $this->companyLegal = $companyLegal;
         $this->address = $address;
         $this->contact = $contact;
+        $this->reference = $reference;
 
         $data = array_merge(
             $this->address->toArray()
@@ -61,6 +64,7 @@ class EbInterfaceInvoiceRecipient extends EbInterfaceBase {
     public function toArray():array {
         return [
             'Legal' => $this->companyLegal->toXml("root"),
+            'OrderReference' => $this->reference->toXml("root"),
             'Address' => $this->address->toXml("root"),
             'Contact' => $this->contact->toXml("root")
         ];

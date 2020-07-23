@@ -131,7 +131,7 @@ class EbInterfaceInvoiceLine extends EbInterfaceBase {
     public function toArray(): array {
 
         $data = [
-            'Description' => $this->description,
+            'Description' => $this->description !== "" ? $this->description : 'n/a',
             'Quantity' => $this->quantity,
             'UnitPrice' => $this->unitPrice
         ];

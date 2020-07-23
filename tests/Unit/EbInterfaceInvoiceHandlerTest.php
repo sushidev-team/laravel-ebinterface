@@ -15,10 +15,12 @@ use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
 use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 use Ambersive\Ebinterface\Models\EbInterfaceDiscount;
+use Ambersive\Ebinterface\Models\EbInterfacePaymentMethodBank;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
 use Ambersive\Ebinterface\Models\EbInterfaceTax;
+use Ambersive\Ebinterface\Models\EbInterfaceOrderReference;
 
 use AMBERSIVE\Tests\TestCase;
 
@@ -31,6 +33,8 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
     public $address;
     public $contact;
     public $legal;
+    public $reference;
+    
 
     protected function setUp(): void
     {
@@ -42,6 +46,13 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         $this->address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT", "office@ambersive.com");
         $this->contact = new EbInterfaceContact("Mr", "Manuel Pirker-XXX");
         $this->legal = new EbInterfaceCompanyLegal();
+        $this->reference = new EbInterfaceOrderReference("U37", now(), "test");
+
+        Config::set('ebinterface.payment', [
+            'iban' => 'DE75512108001245126199',
+            'bic' => 'GIBAATWWXXX',
+            'owner' => 'AMBERSIVE KG'
+        ]);
 
     }
 
@@ -54,6 +65,12 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
      * Test if an instance of invoice will be returned by the EbInterfaceInvoiceHandler
      */
     public function testIfInvoiceHandlerCreateWillReturnInvoiceClass(): void {
+
+        Config::set('ebinterface.payment', [
+            'iban' => 'DE75512108001245126199',
+            'bic' => 'TEST',
+            'owner' => 'AMBERSIVE KG'
+        ]);
 
         $invoice = $this->invoiceHandler->create();
 
@@ -160,6 +177,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
             return new EbInterfaceInvoiceRecipient(
                 $this->legal,
                 $this->address,
+                $this->reference,
                 $this->contact
             );
         });
@@ -176,6 +194,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         $this->invoice->setRecipient(new EbInterfaceInvoiceRecipient(
             $this->legal,
             $this->address,
+            $this->reference,
             $this->contact
         ));
 
@@ -487,6 +506,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
     public function testIfInvoiceToXmlReturnsAValidXml():void {
 
         $this->invoice
+                ->setInvoiceNumber("TEST1")
                 ->setDelivery(function($invoice) {
                     return new EbInterfaceInvoiceDelivery(
                         Carbon::now(),
@@ -504,6 +524,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
                     return new EbInterfaceInvoiceRecipient(
                         $this->legal,
                         $this->address,
+                        $this->reference,
                         $this->contact
                     );
                 })
@@ -525,7 +546,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
         
                 })
                 ->setPaymentMethod(function($paymentMethod){
-                   
+                    $paymentMethod->setAccount(new EbInterfacePaymentMethodBank());
                 })
                 ->setPaymentConditions(null, [
                     new EbInterfaceDiscount(now()->addDays(2), 1),

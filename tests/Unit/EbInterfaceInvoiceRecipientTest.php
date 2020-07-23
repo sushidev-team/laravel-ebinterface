@@ -8,6 +8,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
 use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceRecipient;
+use Ambersive\Ebinterface\Models\EbInterfaceOrderReference;
 
 use AMBERSIVE\Tests\TestCase;
 
@@ -16,6 +17,7 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
     public EbINterfaceAddress $address;
     public EbInterfaceContact $contact;
     public EbInterfaceCompanyLegal $legal;
+    public EbInterfaceOrderReference $reference;
 
     protected function setUp(): void
     {
@@ -23,6 +25,7 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
         $this->address = new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT", "office@ambersive.com");
         $this->contact = new EbInterfaceContact("Mr", "Manuel Pirker-Ihl");
         $this->legal = new EbInterfaceCompanyLegal();
+        $this->reference = new EbInterfaceOrderReference("XXX", now(), "test");
     }
 
     protected function tearDown(): void
@@ -38,6 +41,7 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
         $recipient = new EbInterfaceInvoiceRecipient(
             $this->legal,
             $this->address,
+            $this->reference,
             $this->contact
         );
 
@@ -55,7 +59,8 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
 
         $recipient = new EbInterfaceInvoiceRecipient(
             $this->legal,
-            $this->address
+            $this->address,
+            $this->reference
         );
 
         $this->assertNotNull($recipient);
@@ -86,7 +91,8 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
 
         $recipient = new EbInterfaceInvoiceRecipient(
             $this->legal,
-            new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT")
+            new EbInterfaceAddress("Manuel Pirker-Ihl", "Geylinggasse 15", "Vienna", "1130", "AT"),
+            $this->reference,
         );
 
     }
@@ -99,6 +105,7 @@ class EbInterfaceInvoiceRecipientTest extends TestCase
         $recipient = new EbInterfaceInvoiceRecipient(
             $this->legal,
             $this->address,
+            $this->reference,
             $this->contact
         );
 
