@@ -15,6 +15,10 @@ composer require ambersive/ebinterface
 ## Documentation
 This package is based on the invoice standard [EBINTERFACE 5.0](https://www.wko.at/service/netzwerke/ebInvoice_5p0.pdf).
 
+The generated xml out can be tested by uploading to [TEST-Upload](https://test.erechnung.gv.at/erb?p=tec_test_upload&locale=de_AT).
+
+If you want to learn to create an invoice read the following [tutorial](docs/tutorial.md).
+
 ## Feedback
 
 Please feel free to give us feedback or any improvement suggestions.
