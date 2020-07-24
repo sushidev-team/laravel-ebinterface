@@ -562,4 +562,11 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     }
 
+    public function testIfInvoiceCurrencyCanBeSet():void {
+
+        $this->invoice->setInvoiceCurrency("USD");
+        $this->assertEquals("USD", $this->invoice->currency);
+
+    }
+
 }   
