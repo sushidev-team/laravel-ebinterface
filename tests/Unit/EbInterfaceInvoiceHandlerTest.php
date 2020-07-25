@@ -62,6 +62,21 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
     }
     
     /**
+     * Test if the invoice currency can be set
+     */
+    public function testIfInvoiceCurrencyCanBeSet():void {
+
+        $this->invoice->setInvoiceCurrency("USD");
+        $this->assertEquals("USD", $this->invoice->currency);
+
+    }
+
+    public function testIfInvoiceLanguageCanBeSet():void {
+        $this->invoice->setLanguage("eng");
+        $this->assertEquals("eng", $this->invoice->documentLanguage);
+    }
+
+    /**
      * Test if an instance of invoice will be returned by the EbInterfaceInvoiceHandler
      */
     public function testIfInvoiceHandlerCreateWillReturnInvoiceClass(): void {
@@ -559,13 +574,6 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
         $this->assertNotNull($xml);
         $this->assertNotEquals("", $xml);
-
-    }
-
-    public function testIfInvoiceCurrencyCanBeSet():void {
-
-        $this->invoice->setInvoiceCurrency("USD");
-        $this->assertEquals("USD", $this->invoice->currency);
 
     }
 
