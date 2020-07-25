@@ -29,6 +29,7 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     public EbInterfaceInvoiceHandler $invoiceHandler;
     public EbInterfaceInvoice $invoice;
+    public EbInterfaceInvoice $invoiceComplete;
 
     public $address;
     public $contact;
@@ -53,6 +54,56 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
             'bic' => 'GIBAATWWXXX',
             'owner' => 'AMBERSIVE KG'
         ]);
+
+        // Big invoice
+
+        $this->invoiceComplete = $this->invoice
+                ->setInvoiceNumber("TEST1")
+                ->setDelivery(function($invoice) {
+                    return new EbInterfaceInvoiceDelivery(
+                        Carbon::now(),
+                        $this->address->setEmail("office@ambersive.com"),
+                        $this->contact
+                    );
+                })
+                ->setBiller(function($invoice) {
+                    return new EbInterfaceInvoiceBiller(
+                        $this->address,
+                        $this->contact
+                    );
+                })
+                ->setRecipient(function($invoice){
+                    return new EbInterfaceInvoiceRecipient(
+                        $this->legal,
+                        $this->address,
+                        $this->reference,
+                        $this->contact
+                    );
+                })
+                ->setLines(function($invoice, $lines) use (&$called) {
+            
+                    $lines->add(null, function($line){
+        
+                        $line->setQuantity("STK", 100)
+                             ->setUnitPrice(1)
+                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+        
+                    })->add(null, function($line){
+        
+                        $line->setQuantity("STK", 10)
+                             ->setUnitPrice(1)
+                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
+        
+                    });
+        
+                })
+                ->setPaymentMethod(function($paymentMethod){
+                    $paymentMethod->setAccount(new EbInterfacePaymentMethodBank());
+                })
+                ->setPaymentConditions(null, [
+                    new EbInterfaceDiscount(now()->addDays(2), 1),
+                    new EbInterfaceDiscount(now(), 2),
+                ]);
 
     }
 
@@ -520,61 +571,14 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
      */
     public function testIfInvoiceToXmlReturnsAValidXml():void {
 
-        $this->invoice
-                ->setInvoiceNumber("TEST1")
-                ->setDelivery(function($invoice) {
-                    return new EbInterfaceInvoiceDelivery(
-                        Carbon::now(),
-                        $this->address->setEmail("office@ambersive.com"),
-                        $this->contact
-                    );
-                })
-                ->setBiller(function($invoice) {
-                    return new EbInterfaceInvoiceBiller(
-                        $this->address,
-                        $this->contact
-                    );
-                })
-                ->setRecipient(function($invoice){
-                    return new EbInterfaceInvoiceRecipient(
-                        $this->legal,
-                        $this->address,
-                        $this->reference,
-                        $this->contact
-                    );
-                })
-                ->setLines(function($invoice, $lines) use (&$called) {
-            
-                    $lines->add(null, function($line){
-        
-                        $line->setQuantity("STK", 100)
-                             ->setUnitPrice(1)
-                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
-        
-                    })->add(null, function($line){
-        
-                        $line->setQuantity("STK", 10)
-                             ->setUnitPrice(1)
-                             ->setTax(new EbInterfaceTax("S", 0, $line->getLineAmount()));
-        
-                    });
-        
-                })
-                ->setPaymentMethod(function($paymentMethod){
-                    $paymentMethod->setAccount(new EbInterfacePaymentMethodBank());
-                })
-                ->setPaymentConditions(null, [
-                    new EbInterfaceDiscount(now()->addDays(2), 1),
-                    new EbInterfaceDiscount(now(), 2),
-                ]);
-        ;
-
         // Create xml
-        $xml = $this->invoice->toXml();
+        $xml = $this->invoiceComplete->toXml();
 
         $this->assertNotNull($xml);
         $this->assertNotEquals("", $xml);
 
     }
+
+
 
 }   

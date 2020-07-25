@@ -18,4 +18,8 @@ class EbInterface {
         $this->invoiceCreator = new EbInterfaceInvoiceHandler();
     }
 
+    public function sendInvoice(EbInterfaeInvoice $invoice) {
+
+    }
+
 }
