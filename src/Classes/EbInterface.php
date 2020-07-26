@@ -2,24 +2,53 @@
 
 namespace Ambersive\Ebinterface\Classes;
 
-use SoapClient;
-use SoapFault;
+use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
+
+use GuzzleHttp\Exception\GuzzleException;
+use \GuzzleHttp\Client;
 
 use Ambersive\Ebinterface\Classes\EbInterfaceInvoiceHandler;
 
 class EbInterface {
 
     public EbInterfaceInvoiceHandler $invoiceCreator;
+    public Client $client;
 
-    public function __construct() {
+    public function __construct(\GuzzleHttp\Client $client = null) {
         $this->invoiceCreator = new EbInterfaceInvoiceHandler();
+        $this->client = $client != null ? $client : new Client();
     }
 
-    public function sendInvoice(EbInterfaeInvoice $invoice, bool $test = false) {
+    /**
+     * Define a GuzzleHttpClient (primarly for testing purpose)
+     *
+     * @param  mixed $client
+     * @return void
+     */
+    public function setClient(\GuzzleHttp\Client $client): EbInterface {
+        $this->client = $client;
+        return $this;
+    }
+    
+    /**
+     * Send invoice to e-rechnung / austrian government
+     *
+     * @param  mixed $invoice
+     * @param  mixed $test
+     * @return void
+     */
+    public function sendInvoice(EbInterfaceInvoice $invoice, bool $test = false) {
 
         $message = $this->createSoapMessage($invoice->toXml(), $test);
 
+        $result = $this->client->request('POST', config('ebinterface.webservice') , [
+            'headers' => [
+                'Content-Type' => 'text/xml; charset=UTF8',
+            ],
+            'body' => $message                         
+        ]);
 
+        return $result;
 
     }
     

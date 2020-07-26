@@ -14,7 +14,8 @@
         "phlak/semver": "^3.2",
         "spatie/array-to-xml": "dev-master",
         "myclabs/php-enum": "dev-master",
-        "intervention/validation": "dev-master"
+        "intervention/validation": "dev-master",
+        "guzzlehttp/guzzle": "^7.1@dev"
     },
     "require-dev": {
         "php" : ">=7.4",

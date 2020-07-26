@@ -16,6 +16,7 @@ use Ambersive\Ebinterface\Models\EbInterfaceCompanyLegal;
 use Ambersive\Ebinterface\Models\EbInterfaceInvoiceLines;
 use Ambersive\Ebinterface\Models\EbInterfaceDiscount;
 use Ambersive\Ebinterface\Models\EbInterfacePaymentMethodBank;
+use Ambersive\Ebinterface\Models\EbInterfaceMockResponse;
 
 use Ambersive\Ebinterface\Models\EbInterfaceAddress;
 use Ambersive\Ebinterface\Models\EbInterfaceContact;
@@ -47,6 +48,7 @@ class EbInterfaceTest extends TestCase
 
         Config::set('ebinterface.credentials.username', 'TEST');
         Config::set('ebinterface.credentials.password', 'TEST');
+        Config::set('ebinterface.webservice', 'https://txm.portal.at/at.gv.bmf.erb.test/V2');
 
         $this->interface = new EbInterface();
         $this->invoiceHandler = new EbInterfaceInvoiceHandler();
@@ -133,11 +135,26 @@ class EbInterfaceTest extends TestCase
 
     }
 
+    /**
+     * Test if the xml body of the invoice will be 
+     */
     public function testIfSoapMessageWillBeCreatedCorrectly(): void {
 
         $msg = $this->interface->createSoapMessage($this->invoice->toXml(), true);
-        
         $this->assertNotFalse(strpos($msg, base64_encode($this->invoice->toXml())));
+
+    }
+
+    /**
+     * Test if the request handler will trigger an http request + returns
+     * a successful response (attentin this is a mocked reeponse)
+     */
+    public function testIfSendInvoiceWillReturnSucessfulResponse(): void {
+
+        $response = new EbInterfaceMockResponse(200, []);
+
+        $result = $this->interface->setClient($this->createApiMock([$response]))->sendInvoice($this->invoice, true);
+        $this->assertEquals(200, $result->getStatusCode());
 
     }
 
