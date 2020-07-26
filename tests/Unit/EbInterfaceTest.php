@@ -158,4 +158,12 @@ class EbInterfaceTest extends TestCase
 
     }
 
+    /**
+     * Test if the the request will return statuscode 500
+     */
+    public function testIfSendInvoiceWillFailDueIncorrectCredentials(): void {
+        $this->expectException(\GuzzleHttp\Exception\ServerException::class);
+        $result = $this->interface->sendInvoice($this->invoice, true);
+    }
+
 }
