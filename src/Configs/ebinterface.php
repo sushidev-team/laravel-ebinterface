@@ -10,13 +10,14 @@ return [
     */
 
     'testMode' => env('EBINTERFACE_TESTMODE', false),
-    'wsdl'     => [
-        'production' => "",
-        'testing'    => "https://test.erechnung.gv.at/files/ws/erb-in-test-order-102.wsdl"
+    'webservice' => env('EBINTERFACE_WEBSERVICE'),
+    "credentials" => [
+        'username'          => env('EBINTERFACE_USERNAME'),
+        'password'          => env('EBINTERFACE_PASSWORD')
     ],
-    'schema' => env('EBINTERFACE_SCHEMA', "http://www.ebinterface.at/schema/5p0/"),
-    'generator' => env('EBINTERFACE_GENERATOR', "AMBERSIVE KG - Invoice Creator"),
-    'day'    => env('EBINTERFCE_DAYS', 14),
+    'schema'                => env('EBINTERFACE_SCHEMA', "http://www.ebinterface.at/schema/5p0/"),
+    'generator'             => env('EBINTERFACE_GENERATOR', "AMBERSIVE KG - Invoice Creator"),
+    'day'                   => env('EBINTERFCE_DAYS', 14),
     'biller' => [
         'vatId'             => env('EBINTERFACE_BILLER_VATID', null),
         'billerId'          => env('EBINTERFACE_BILLER_ID', null),
