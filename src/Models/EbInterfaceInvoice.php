@@ -109,6 +109,17 @@ class EbInterfaceInvoice {
         $this->documentLanguage = $language;
         return $this;
     }
+    
+    /**
+     * Is this invoice a duplication of an existing one?
+     *
+     * @param  mixed $isDuplicate
+     * @return EbInterfaceInvoice
+     */
+    public function setIsDuplicate(bool $isDuplicate): EbInterfaceInvoice {
+        $this->documentDuplicate = $isDuplicate;
+        return $this;
+    }
         
     /**
      * Define if this invoice should be check by the recipient
@@ -129,7 +140,6 @@ class EbInterfaceInvoice {
      */
     public function setPaymentDueDays(int $days): EbInterfaceInvoice {
         $this->paymentDueDays = $days;
-
         $this->invoiceDate !== null ? $this->paymentDueDate = $this->invoiceDate->copy()->addDays($this->paymentDueDays) : null;
         return $this;
     }
@@ -462,7 +472,6 @@ class EbInterfaceInvoice {
             $lang = $this->documentLanguage !== null && $this->documentLanguage !== "" ? $this->documentLanguage : "ger";
             $check = $this->documentCheck ? 'true' : 'false';
             $isDuplicate = $this->documentDuplicate ? 'true' : 'false';
-            // TODO: Create the missing parameter for the root container
 
             $xml = str_replace("<Invoice>", "<Invoice xmlns=\"${schema}\" GeneratingSystem=\"${generator}\" DocumentType=\"Invoice\" InvoiceCurrency=\"${currency}\" DocumentTitle=\"${name}\" Language=\"${lang}\" ManualProcessing=\"${check}\" IsDuplicate=\"${isDuplicate}\">", $xml);
 
