@@ -129,6 +129,8 @@ class EbInterfaceInvoice {
      */
     public function setPaymentDueDays(int $days): EbInterfaceInvoice {
         $this->paymentDueDays = $days;
+
+        $this->invoiceDate !== null ? $this->paymentDueDate = $this->invoiceDate->copy()->addDays($this->paymentDueDays) : null;
         return $this;
     }
 
@@ -403,7 +405,7 @@ class EbInterfaceInvoice {
         $this->recipient !== null ? $data['InvoiceRecipient'] = $this->recipient->toXml("root") : null;
         $this->lines !== null ? $data['Details'] = $this->lines->toXml() : null;
         $this->taxSummary !== null ? $data['Tax'] = $this->taxSummary->toXml("root") : null;
-//
+
         $data['TotalGrossAmount'] = $this->totalGrossAmount;
         $data['PayableAmount'] = $this->totalGrossAmount;
 
@@ -413,7 +415,7 @@ class EbInterfaceInvoice {
         $conditions = "";
 
         if ($this->paymentDueDate === null) {
-            $this->paymentDueDate = now()->addDays($this->paymentDueDays);
+            $this->paymentDueDate = $this->invoiceDate->copy()->addDays($this->paymentDueDays);
         }
 
         if ($this->paymentDueDate !== null) {

@@ -579,6 +579,26 @@ class EbInterfaceInvoiceHandlerTest extends TestCase
 
     }
 
+    /**
+     * Test if the paymentDueDay can be set correctly
+     */
+    public function testIfInvoiceSetPaymentDueDaysSetTheValueCorrectly(): void {
+
+        $this->invoice->setPaymentDueDays(10);
+        $this->assertEquals(10, $this->invoice->paymentDueDays);
+
+    }
+
+    /**
+     * Test if the payment due date will be calculated based on the invoice date
+     */
+    public function testIfInvoiceSetPaymentDueDaysHasAnEffectToTheDueDateCalculation(): void {
+
+        $this->invoice->setPaymentDueDays(10);
+        $this->assertNotNull($this->invoice->paymentDueDate);
+        $this->assertEquals(10, $this->invoice->paymentDueDate->diffInDays($this->invoice->invoiceDate));
+
+    }
 
 
 }   
