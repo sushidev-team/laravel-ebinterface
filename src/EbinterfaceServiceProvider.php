@@ -29,7 +29,15 @@ class EbinterfaceServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-       
+        // Configs
+        $this->publishes([
+            __DIR__.'/Configs/ebinterface.php'         => config_path('ebinterface.php'),
+        ],'ebinterface');
+
+        $this->mergeConfigFrom(
+            __DIR__.'/Configs/ebinterface.php', 'ebinterface.php'
+        );
+
     }
 
 
