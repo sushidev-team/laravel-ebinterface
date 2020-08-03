@@ -166,4 +166,29 @@ class EbInterfaceTest extends TestCase
         $result = $this->interface->sendInvoice($this->invoice, true);
     }
 
+    public function testIfSendInvoiceWillWorkWithCorrectCredentials(): void {
+
+        if (env('TESTING_EBINTERFACE_USERNAME') !== null && env('TESTING_EBINTERFACE_PASSWORD') !== null) {
+
+            Config::set('ebinterface.credentials.username', env('TESTING_EBINTERFACE_USERNAME'));
+            Config::set('ebinterface.credentials.password', env('TESTING_EBINTERFACE_PASSWORD'));
+            Config::set('ebinterface.webservice', 'https://txm.portal.at/at.gv.bmf.erb.test/V2');
+
+            $result = $this->interface->sendInvoice($this->invoice, true);
+
+        }
+        else {
+
+            // Test will be true if the environement variables cannot be found.
+            $msg = "\n";
+            env('TESTING_EBINTERFACE_USERNAME') === null ? $msg .= "\nATTENTION: no testing for sending the invoice. Use the TESTING_EBINTERFACE_USERNAME env key." : null;
+            env('TESTING_EBINTERFACE_PASSWORD') === null ? $msg .= "\nATTENTION: no testing for sending the invoice. Use the TESTING_EBINTERFACE_PASSWORD env key.\n" : null;
+            $msg .= "\n";
+            echo $msg;
+            $this->assertTrue(true);
+
+        }
+
+    }
+
 }

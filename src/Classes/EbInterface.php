@@ -2,6 +2,9 @@
 
 namespace Ambersive\Ebinterface\Classes;
 
+use App;
+use Log;
+
 use Ambersive\Ebinterface\Models\EbInterfaceInvoice;
 
 use GuzzleHttp\Exception\GuzzleException;
@@ -39,16 +42,32 @@ class EbInterface {
      */
     public function sendInvoice(EbInterfaceInvoice $invoice, bool $test = false) {
 
+        if (App::environment() === true && $test === false) {
+            $test = true;
+        }
+
         $message = $this->createSoapMessage($invoice->toXml(), $test);
 
-        $result = $this->client->request('POST', config('ebinterface.webservice') , [
-            'headers' => [
-                'Content-Type' => 'text/xml; charset=UTF8',
-            ],
-            'body' => $message                         
-        ]);
+        try {
 
-        return $result;
+            $result = $this->client->request('POST', config('ebinterface.webservice') , [
+                'headers' => [
+                    'Content-Type' => 'text/xml; charset=UTF8',
+                ],
+                'body' => $message                         
+            ]);
+
+            return $result;
+
+        } catch (\GuzzleHttp\Exception\ServerException $exception) {
+            
+            // Log the exeception
+            $responseBody = $exception->getResponse()->getBody(true);
+            Log::error($responseBody->getContents());
+
+            // Throw the exeption to the outer container
+            throw $exception;
+        }
 
     }
     
@@ -88,6 +107,7 @@ class EbInterface {
         $soapMessage = preg_replace("/\\s{2,} /", " ", $soapMessage);
         $soapMessage = str_replace("\t", "", $soapMessage);
         $soapMessage = str_replace("\n", "", $soapMessage);
+        $soapMessage = str_replace("> <", "><", $soapMessage);
 
         return $soapMessage;
 
