@@ -20,7 +20,7 @@
     "require-dev": {
         "php" : ">=7.4",
         "illuminate/support": "5.8.*|6.*|7.*|8.*|dev-master",
-        "laravel/framework": "5.8.*|6.*|7.*|8.*|dev-master",
+        "laravel/framework": "^6.20.14|7.*|8.*|dev-master",
         "ambersive/keepachangelog": "dev-master",
         "phpunit/phpunit": "^9.3@dev",
         "orchestra/testbench": "3.8.*|4.*|5.*|6.*"
