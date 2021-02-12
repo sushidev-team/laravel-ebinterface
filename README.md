@@ -1,8 +1,8 @@
 # ambersive/ebinterface
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/979720a6c6bec2f5237b/maintainability)](https://codeclimate.com/github/AMBERSIVE/laravel-ebinterface/maintainability) [![Build Status](https://travis-ci.org/AMBERSIVE/laravel-ebinterface.svg?branch=master)](https://travis-ci.org/AMBERSIVE/laravel-ebinterface)
+[![Maintainability](https://api.codeclimate.com/v1/badges/979720a6c6bec2f5237b/maintainability)](https://codeclimate.com/github/AMBERSIVE/laravel-ebinterface/maintainability)
 
-Laravel ebInterface integration. This package can create create fully valid ebInterface invoices. We are currently working on the integration of the webservice.
+Laravel ebInterface integration. This package can create fully valid ebInterface invoices. We are currently working on the integration of the webservice.
 
 Changes between versions will be tracked in the [CHANGELOG](CHANGELOG.md).
 
